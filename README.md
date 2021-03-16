@@ -1,1 +1,1 @@
-# Umbraco-Akismet
+# Akismet Management for Umbraco
