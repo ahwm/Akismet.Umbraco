@@ -10,7 +10,7 @@ using Umbraco.Web.Mvc;
 using Umbraco.Web.Trees;
 using Umbraco.Web.WebApi.Filters;
 
-namespace Akismet.Umbraco
+namespace Akismet.Umbraco.Controllers
 {
     [Tree("akismet", "akismetTree", TreeTitle = "Akismet", SortOrder = 1)]
     [PluginController("akismet")]
