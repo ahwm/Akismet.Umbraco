@@ -18,6 +18,7 @@ namespace Akismet.Umbraco
         public void Compose(Composition composition)
         {
             composition.Sections().InsertBefore<PackagesSection, AkismetSection>();
+            composition.Register<AkismetService>();
         }
     }
 
@@ -75,7 +76,7 @@ namespace Akismet.Umbraco
             // Lots of methods available in the MigrationBase class - discover with this.
             if (TableExists("AkismetComments") == false)
             {
-                Create.Table<AkismetCommentsSchema>().Do();
+                Create.Table<AkismetSubmissionSchema>().Do();
             }
             else
             {
@@ -83,10 +84,10 @@ namespace Akismet.Umbraco
             }
         }
 
-        [TableName("AkismetComments")]
+        [TableName("AkismetSubmission")]
         [PrimaryKey("Id", AutoIncrement = true)]
         [ExplicitColumns]
-        public class AkismetCommentsSchema
+        public class AkismetSubmissionSchema
         {
             [PrimaryKeyColumn(AutoIncrement = true, IdentitySeed = 1)]
             [Column("Id")]
@@ -98,9 +99,43 @@ namespace Akismet.Umbraco
             [Column("CommentType")]
             public string CommentType { get; set; }
 
+            [Column("CommentText")]
+            [SpecialDbType(SpecialDbTypes.NVARCHARMAX)]
+            public string CommentText { get; set; }
+
             [Column("CommentData")]
-            [SpecialDbType(SpecialDbTypes.NTEXT)]
+            [SpecialDbType(SpecialDbTypes.NVARCHARMAX)]
             public string CommentData { get; set; }
+
+            [Column("Result")]
+            public string Result { get; set; }
         }
+    }
+
+    [TableName("AkismetSubmission")]
+    [PrimaryKey("Id", AutoIncrement = true)]
+    [ExplicitColumns]
+    public class AkismetSubmission
+    {
+        [PrimaryKeyColumn(AutoIncrement = true, IdentitySeed = 1)]
+        [Column("Id")]
+        public int Id { get; set; }
+
+        [Column("CommentDate")]
+        public DateTime CommentDate { get; set; }
+
+        [Column("CommentType")]
+        public string CommentType { get; set; }
+
+        [Column("CommentText")]
+        [SpecialDbType(SpecialDbTypes.NVARCHARMAX)]
+        public string CommentText { get; set; }
+
+        [Column("CommentData")]
+        [SpecialDbType(SpecialDbTypes.NVARCHARMAX)]
+        public string CommentData { get; set; }
+
+        [Column("Result")]
+        public string Result { get; set; }
     }
 }

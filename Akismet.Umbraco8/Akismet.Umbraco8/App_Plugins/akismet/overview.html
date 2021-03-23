@@ -1,1 +1,12 @@
 ﻿<h1>Akismet Overview</h1>
+
+<div ng-controller="AkismetController">
+    <umb-loader
+        ng-if="vm.loading">
+    </umb-loader>
+    <div id="akismet-status" style="display:none;">
+        Invalid API Key
+    </div>
+
+    <div id="akismet-account"></div>
+</div>

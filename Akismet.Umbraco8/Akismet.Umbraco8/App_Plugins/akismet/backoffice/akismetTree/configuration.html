@@ -1,0 +1,47 @@
+﻿
+
+<div ng-controller="AkismetConfigController as vm">
+
+    <form name="mySectionForm" novalidate>
+
+        <umb-editor-view footer="false">
+            <umb-editor-header
+                name="vm.page.name"
+                hide-alias="true"
+                hide-description="true"
+                name-locked="true"
+                hide-icon="true">
+            </umb-editor-header>
+
+            <umb-editor-container>
+                
+                <div class="container-fluid">
+                    <div class="row">
+                        <label>API Key:</label>
+                        <input type="text" id="akismetKey" name="akismetKey" class="form-control" />
+                    </div>
+                    <div class="row">
+                        <label>Site Home:</label>
+                        <input type="text" id="akismetUrl" name="akismetUrl" class="form-control" />
+                    </div>
+                </div>
+
+                <umb-button
+        action="vm.Save()"
+        type="button"
+        button-style="action"
+        state="vm.buttonState"
+        shortcut="ctrl+s"
+        label="Save"
+        disabled="vm.buttonState === 'busy'">
+    </umb-button>
+            </umb-editor-container>
+
+            <!--<umb-editor-footer>
+                // footer content here
+            </umb-editor-footer>-->
+
+        </umb-editor-view>
+
+    </form>
+</div>
