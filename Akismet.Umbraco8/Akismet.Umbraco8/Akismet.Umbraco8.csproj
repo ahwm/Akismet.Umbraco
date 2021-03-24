@@ -8,15 +8,28 @@
     <Description>Akismet for Umbraco 8</Description>
     <Copyright>(c) 2021 Adam Humpherys</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/ahwm/Umbraco-Akismet</PackageProjectUrl>
-    <RepositoryUrl>https://github.com/ahwm/Umbraco-Akismet</RepositoryUrl>
-    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/ahwm/Akismet.Umbraco</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ahwm/Akismet.Umbraco</RepositoryUrl>
+    <PackageReleaseNotes>Initial alpha release; dashboard mostly functional, AkismetService is working. *PRERELEASE* - database structure may change, but other changes should not cause breaking issues</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="UmbracoCms.Web" Version="[8.0,8.999999]" />
     <PackageReference Include="AkismetApi.Net" Version="[1.1.1]" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
+
+  <PropertyGroup>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>
+      $(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb
+    </AllowedOutputExtensionsInPackageBuildOutputFolder>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.1-alpha</Version>
+  </PropertyGroup>
 
   <ItemGroup>
     <Content Include="App_Plugins\akismet\package.manifest">
