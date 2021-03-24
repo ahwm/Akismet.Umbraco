@@ -10,7 +10,9 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/ahwm/Akismet.Umbraco</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ahwm/Akismet.Umbraco</RepositoryUrl>
-    <PackageReleaseNotes>Initial alpha release; dashboard mostly functional, AkismetService is working. *PRERELEASE* - database structure may change, but other changes should not cause breaking issues</PackageReleaseNotes>
+    <PackageReleaseNotes>Dashboard bugfix.
+
+*PRERELEASE - DO NOT USE IN PRODUCTION WEBSITES* - database structure may change, but other changes should not cause breaking issues</PackageReleaseNotes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,7 +30,7 @@
     </AllowedOutputExtensionsInPackageBuildOutputFolder>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1-alpha</Version>
+    <Version>0.1-alpha2</Version>
   </PropertyGroup>
 
   <ItemGroup>
