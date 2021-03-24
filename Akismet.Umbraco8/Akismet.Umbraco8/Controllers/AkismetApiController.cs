@@ -34,7 +34,7 @@ namespace Akismet.Umbraco.Controllers
             AkismetClient client = new AkismetClient(key, new Uri(blogUrl), "Umbraco CMS");
             return client.VerifyKey();
         }
-        
+
         public bool VerifyKey(string key, string blogUrl)
         {
             if (String.IsNullOrWhiteSpace(key) || String.IsNullOrWhiteSpace(blogUrl))

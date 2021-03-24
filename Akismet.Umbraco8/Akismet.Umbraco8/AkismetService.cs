@@ -20,7 +20,7 @@ namespace Akismet.Umbraco
 
         internal Dictionary<string, string> GetConfig()
         {
-            string appData = System.Web.Hosting.HostingEnvironment.MapPath("~/App_Data");
+            string appData = System.Web.Hosting.HostingEnvironment.MapPath("~/App_Plugins/akismet");
             if (!File.Exists(Path.Combine(appData, "akismetConfig.json")))
                 return new Dictionary<string, string> { { "key", "" }, { "blogUrl", "" } };
             Dictionary<string, string> config = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(Path.Combine(appData, "akismetConfig.json")));

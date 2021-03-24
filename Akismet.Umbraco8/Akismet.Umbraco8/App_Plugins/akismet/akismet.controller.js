@@ -1,6 +1,7 @@
 ﻿angular.module("umbraco").controller("AkismetController", function ($scope, $http, notificationsService) {
     var vm = this;
     vm.loading = true;
+    vm.stats = [];
 
     angular.element(function () {
         init();
@@ -60,9 +61,80 @@
                     ul.appendChild(li);
                 }
                 acct.appendChild(ul);
+                
+                vm.loading = true;
+                getStats();
             } else {
                 acct.classList.add("alert", "alert-error");
                 acct.innerText = "There was a problem loading account details";
+            }
+        });
+    };
+
+    var getStats = function () {
+        $http({
+            method: 'GET',
+            url: '/Umbraco/backoffice/Api/AkismetApi/GetStats',
+            cache: false
+        }).then(function (data) {
+            // data: data, status, headers, config
+            vm.loading = false;
+
+            var date = new Intl.DateTimeFormat('en-US', { month: "long", year: "numeric" });
+            var stats = document.getElementById('akismet-stats');
+            var history = document.getElementById('akismet-history');
+            console.log(data);
+            if (data.status == 200) {
+                var ul = document.createElement('ul');
+                var li = document.createElement('li');
+                li.innerHTML = '<strong>Accuracy:</strong> ' + data.data.Accuracy + ' %';
+                ul.appendChild(li);
+                li = document.createElement('li');
+                li.innerHTML = '<strong>Spam:</strong> ' + data.data.Spam;
+                ul.appendChild(li);
+                li = document.createElement('li');
+                li.innerHTML = '<strong>Ham:</strong> ' + data.data.Ham;
+                ul.appendChild(li);
+                li = document.createElement('li');
+                li.innerHTML = '<strong>Missed Spam:</strong> ' + data.data.MissedSpam;
+                ul.appendChild(li);
+                li = document.createElement('li');
+                li.innerHTML = '<strong>False Positives:</strong> ' + data.data.FalsePositives;
+                ul.appendChild(li);
+                
+                stats.appendChild(ul);
+
+                ul = document.createElement('ul');
+                li = document.createElement('li');
+                for (const property in data.data.Breakdown) {
+                    var monthDate = new Date(data.data.Breakdown[property].Da);
+                    var prop = data.data.Breakdown[property];
+
+                    li = document.createElement('li');
+                    li.innerHTML = '<strong>' + date.format(monthDate) + '</strong>';
+
+                    var innerUl = document.createElement('ul');
+                    var innerLi = document.createElement('li');
+                    innerLi.innerHTML = '<strong>Spam:</strong> ' + prop.Spam;
+                    innerUl.appendChild(innerLi);
+                    innerLi = document.createElement('li');
+                    innerLi.innerHTML = '<strong>Ham:</strong> ' + prop.Ham;
+                    innerUl.appendChild(innerLi);
+                    innerLi = document.createElement('li');
+                    innerLi.innerHTML = '<strong>Missed Spam:</strong> ' + prop.MissedSpam;
+                    innerUl.appendChild(innerLi);
+                    innerLi = document.createElement('li');
+                    innerLi.innerHTML = '<strong>False Positives:</strong> ' + prop.FalsePositives;
+                    innerUl.appendChild(innerLi);
+                    li.appendChild(innerUl);
+                    ul.prepend(li);
+                }
+
+                history.appendChild(ul);
+
+            } else {
+                document.getElementById('akismet-stats').classList.add("alert", "alert-error");
+                document.getElementById('akismet-stats').innerText = "There was a problem retrieving Akismet Statistics. Please try again later.";
             }
         });
     };
@@ -73,7 +145,7 @@ angular.module("umbraco").controller("AkismetConfigController", function ($scope
     vm.page = {};
     vm.page.name = "Configuration";
     //console.log(vm);
-    console.log($scope);
+    //console.log($scope);
 
     $scope.name = "API Key";
 
@@ -123,20 +195,19 @@ angular.module("umbraco").controller("AkismetConfigController", function ($scope
                 method: 'POST',
                 url: '/Umbraco/backoffice/Api/AkismetApi/VerifyKey?key=' + key + '&blogUrl=' + blogUrl,
                 cache: false
-            })
-                .then(function (data) {
-                    // data: data, status, headers, config
+            }).then(function (data) {
+                // data: data, status, headers, config
 
-                    if (data.data) {
-                        vm.buttonState = "success";
-                        notificationsService.success("API key saved");
-                    } else {
-                        vm.buttonState = "error";
-                        notificationsService.error("API key invalid");
-                    }
-                });
+                if (data.data) {
+                    vm.buttonState = "success";
+                    notificationsService.success("API key saved. Return to the overview to see more information.");
+                } else {
+                    vm.buttonState = "error";
+                    notificationsService.error("API key invalid");
+                }
+            });
         }
-    }
+    };
 
     function extractHostname(url) {
         var hostname;
