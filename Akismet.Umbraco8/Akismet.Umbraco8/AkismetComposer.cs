@@ -28,10 +28,10 @@ namespace Akismet.Umbraco
     [RuntimeLevel(MinLevel = RuntimeLevel.Run)]
     public class AkismetComonent : IComponent
     {
-        private IScopeProvider _scopeProvider;
-        private IMigrationBuilder _migrationBuilder;
-        private IKeyValueService _keyValueService;
-        private ILogger _logger;
+        private readonly IScopeProvider _scopeProvider;
+        private readonly IMigrationBuilder _migrationBuilder;
+        private readonly IKeyValueService _keyValueService;
+        private readonly ILogger _logger;
 
         public AkismetComonent(IScopeProvider scopeProvider, IMigrationBuilder migrationBuilder, IKeyValueService keyValueService, ILogger logger)
         {
@@ -49,8 +49,8 @@ namespace Akismet.Umbraco
 
             // This is the steps we need to take
             // Each step in the migration adds a unique value
-            migrationPlan.From(string.Empty)
-                .To<AddAkismetCommentsTable>("akismetcomments-db");
+            migrationPlan.From(string.Empty).To<AddAkismetCommentsTable>("akismetcomments-db");
+            migrationPlan.From("akismetcomments-db").To<AddExtraColumns>("akismetcomments-AddExtraColumns");
 
             // Go and upgrade our site (Will check if it needs to do the work or not)
             // Based on the current/latest step
@@ -112,6 +112,27 @@ namespace Akismet.Umbraco
         }
     }
 
+    public class AddExtraColumns : MigrationBase
+    {
+        public AddExtraColumns(IMigrationContext context) : base(context) { }
+
+        public override void Migrate()
+        {
+            Logger.Debug<AddAkismetCommentsTable>("Running migration {MigrationStep}", "AddExtraColumns");
+
+            if (!ColumnExists("AkismetSubmission", "SpamStatus"))
+            {
+                Create.Column("SpamStatus").OnTable("AkismetSubmission").AsInt32().WithDefaultValue(0).Do();
+                Create.Column("UserIp").OnTable("AkismetSubmission").AsString(50).Nullable().Do();
+                Create.Column("UserName").OnTable("AkismetSubmission").AsString(50).Nullable().Do();
+            }
+            else
+            {
+                Logger.Debug<AddAkismetCommentsTable>("Additional columns (checked for Location) already exist, skipping migration");
+            }
+        }
+    }
+
     [TableName("AkismetSubmission")]
     [PrimaryKey("Id", AutoIncrement = true)]
     [ExplicitColumns]
@@ -137,5 +158,14 @@ namespace Akismet.Umbraco
 
         [Column("Result")]
         public string Result { get; set; }
+
+        [Column("SpamStatus")]
+        public int SpamStatus { get; set; }
+
+        [Column("UserIp")]
+        public string UserIp { get; set; }
+
+        [Column("UserName")]
+        public string UserName { get; set; }
     }
 }

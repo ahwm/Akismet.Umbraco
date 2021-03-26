@@ -3,8 +3,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Web;
 using Umbraco.Core.Scoping;
 
 namespace Akismet.Umbraco
@@ -56,8 +54,12 @@ namespace Akismet.Umbraco
                     {
                         CommentData = JsonConvert.SerializeObject(comment),
                         CommentDate = DateTime.UtcNow,
+                        CommentText = comment.CommentContent,
                         CommentType = comment.CommentType.ToString(),
-                        Result = JsonConvert.SerializeObject(result)
+                        Result = JsonConvert.SerializeObject(result),
+                        SpamStatus = (int)result.SpamStatus,
+                        UserIp = comment.UserIp,
+                        UserName = comment.CommentAuthor
                     });
 
                     scope.Complete();

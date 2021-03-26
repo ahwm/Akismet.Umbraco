@@ -1,4 +1,5 @@
 ﻿
+
 <div ng-controller="AkismetConfigController as vm">
 
     <form name="mySectionForm" novalidate>
@@ -28,9 +29,14 @@
                     </div>
                 </div>
 
-                <umb-button action="vm.Save()" type="button" button-style="primary" state="vm.buttonState" shortcut="ctrl+s" label="Save" disabled="vm.buttonState === 'busy'"></umb-button>
             </umb-editor-container>
 
+            <umb-editor-footer>
+                <umb-editor-footer-content-right>
+                    <umb-button action="vm.Save()" type="button" button-style="success" state="vm.buttonState" shortcut="ctrl+s" label="Save" disabled="vm.buttonState === 'busy'"></umb-button>
+                    <!--<umb-button type="button" label="Return to list" button-style="info"></umb-button>-->
+                </umb-editor-footer-content-right>
+            </umb-editor-footer>
         </umb-editor-view>
 
     </form>

@@ -142,8 +142,9 @@
 
 angular.module("umbraco").controller("AkismetConfigController", function ($scope, $http, notificationsService) {
     var vm = this;
-    vm.page = {};
-    vm.page.name = "Configuration";
+    vm.page = {
+        name: "Configuration"
+    };
     //console.log(vm);
     //console.log($scope);
 
@@ -226,5 +227,138 @@ angular.module("umbraco").controller("AkismetConfigController", function ($scope
         hostname = hostname.split('?')[0];
 
         return hostname;
+    }
+});
+
+angular.module("umbraco").controller("AkismetSpamQueueController", function ($scope, $http, notificationsService, listViewHelper) {
+    var vm = this;
+    vm.page = {
+        name: "Spam Queue"
+    };
+    vm.pagination = {
+        pageNumber: 1,
+        totalPages: 1
+    };
+    vm.options = {
+        includeProperties: [
+            { alias: "date", header: "Date", allowSorting: false },
+            { alias: "comment", header: "Comment", allowSorting: false },
+            { alias: "ip", header: "User's IP", allowSorting: false }
+        ]
+    };
+    vm.items = [
+        //{
+        //    "name": "Spam Comment",
+        //    "date": "03/26/2021 1:27pm",
+        //    "comment": "This is a test. Testing 1 2 3...",
+        //    "ip": "127.0.0.1",
+        //    "id": 1
+        //},
+        //{
+        //    "name": "Comment",
+        //    "date": "03/26/2021 12:27pm",
+        //    "comment": "This is a test. Testing 1 2 3...",
+        //    "ip": "127.0.0.1",
+        //    "id": 2
+        //}
+    ];
+    vm.selection = [];
+    $scope.options = {
+        filter: '',
+        orderBy: "date",
+        orderDirection: "asc",
+        bulkActionsAllowed: true
+    };
+
+    var init = function () {
+        $http({
+            method: 'GET',
+            url: '/Umbraco/backoffice/Api/AkismetApi/GetComments',
+            cache: false
+        }).then(function (data) {
+            //console.log(data);
+            vm.items.push(
+                {
+                    "name": "Person 1",
+                    "date": "03/26/2021 1:27pm",
+                    "comment": "This is a test. Testing 1 2 3...",
+                    "ip": "127.0.0.1",
+                    "id": 1
+                },
+                {
+                    "name": "Person 2",
+                    "date": "03/26/2021 12:27pm",
+                    "comment": "This is a test. Testing 1 2 3...",
+                    "ip": "127.0.0.1",
+                    "id": 2
+                }
+            );
+        });
+        $http({
+            method: 'GET',
+            url: '/Umbraco/backoffice/Api/AkismetApi/GetCommentPageCount',
+            cache: false
+        }).then(function (data) {
+            var pages = data.data;
+            if (pages == 0)
+                pages = 1;
+            vm.pagination.totalPages = pages;
+        });
+    };
+
+    angular.element(function () {
+        init();
+    });
+
+    vm.selectItem = selectItem;
+    vm.clickItem = clickItem;
+    vm.selectAll = selectAll;
+    vm.isSelectedAll = isSelectedAll;
+    vm.isSortDirection = isSortDirection;
+    vm.sort = sort;
+    vm.allowSelectAll = true;
+
+    _.each($scope.options.includeProperties, function (e, i) {
+        //e.allowSorting = true;
+        if (e.isSystem) {
+            //localize the header
+            var key = getLocalizedKey(e.alias);
+            localizationService.localize(key).then(function (v) {
+                e.header = v;
+                e.allowSorting = false;
+            });
+        }
+    });
+ 
+    function selectAll($event) {
+        listViewHelper.selectAllItemsToggle(vm.items, vm.selection);
+    }
+ 
+    function isSelectedAll() {
+        return listViewHelper.isSelectedAll(vm.items, vm.selection);
+    }
+ 
+    function clickItem(item) {
+        alert("click node");
+    }
+ 
+    function selectItem(selectedItem, $index, $event) {
+        listViewHelper.selectHandler(selectedItem, $index, vm.items, vm.selection, $event);
+    }
+        
+    function isSortDirection(col, direction) {
+        return listViewHelper.setSortingDirection(col, direction, $scope.options);
+    }
+        
+    function sort(field, allow, isSystem) {
+        if (allow) {
+            listViewHelper.setSorting(field, allow, $scope.options);
+            //console.log($scope);
+            //$scope.getContent($scope.contentId);
+        }
+    }
+
+    function toggleBulkActions() {
+
     }
 });

@@ -20,7 +20,7 @@ namespace Akismet.Umbraco.Controllers
         {
             var root = base.CreateRootNode(queryStrings);
 
-            root.RoutePath = string.Format("{0}/{1}/{2}", Constants.Applications.Settings, "akismetTree", "overview");
+            root.RoutePath = string.Format("{0}/{1}", "akismet", "overview");
 
             // set the icon
             //root.Icon = "icon-wrench";
