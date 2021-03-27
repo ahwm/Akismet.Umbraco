@@ -35,18 +35,26 @@
                         <umb-pagination
                             page-number="vm.pagination.pageNumber"
                             total-pages="vm.pagination.totalPages"
-                            on-next="vm.nextPage"
-                            on-prev="vm.prevPage"
-                            on-change="vm.changePage"
-                            on-go-to-page="vm.goToPage">
+                            on-next="vm.changePage(pageNumber)"
+                            on-prev="vm.changePage(pageNumber)"
+                            on-change="vm.changePage(pageNumber)"
+                            on-go-to-page="vm.changePage(pageNumber)">
                         </umb-pagination>
                     </div>
                 </div>
-
+                <umb-confirm-action
+                    ng-if="vm.confirmDelete"
+                    direction="left"
+                    on-confirm="vm.confirmDelete()"
+                    on-cancel="vm.hidePrompt()">
+                    Are you sure you wish to delete the selected comment(s)? This operation cannot be reversed.
+                </umb-confirm-action>
             </umb-editor-container>
 
             <umb-editor-footer>
-                <umb-editor-footer-content-right>
+                <umb-editor-footer-content-right id="bulkActions" style="display:none;">
+                    <umb-button type="button" button-style="success" action="vm.deleteComments()" label="Delete" disabled="vm.deleteState === 'busy'" state="vm.deleteState"></umb-button>
+                    <umb-button type="button" button-style="info" label="Report False Positive" disabled="vm.hamState === 'busy'" state="vm.hamState"></umb-button>
                     <!--<umb-button action="vm.Save()" type="button" button-style="info" state="vm.buttonState" shortcut="ctrl+s" label="Save" disabled="vm.buttonState === 'busy'"></umb-button>-->
                     <!--<umb-button type="button" label="Return to list" button-style="info"></umb-button>-->
                 </umb-editor-footer-content-right>

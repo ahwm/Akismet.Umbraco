@@ -12,7 +12,7 @@ using Umbraco.Web.WebApi.Filters;
 
 namespace Akismet.Umbraco.Controllers
 {
-    [Tree("akismet", "akismetTree", TreeTitle = "Akismet", SortOrder = 1)]
+    [Tree("akismet", "akismet", TreeTitle = "Akismet", SortOrder = 1)]
     [PluginController("akismet")]
     public class AkismetTreeController : TreeController
     {
@@ -57,9 +57,9 @@ namespace Akismet.Umbraco.Controllers
                 // create our node collection
                 var nodes = new TreeNodeCollection
                 {
-                    CreateTreeNode("1", "-1", queryStrings, "Configuration", "icon-wrench", false, "akismet/akismetTree/configuration"),
-                    CreateTreeNode("2", "-1", queryStrings, "Spam Queue", "icon-conversation-alt", false, "akismet/akismetTree/spam-queue"),
-                    CreateTreeNode("3", "-1", queryStrings, "Comments", "icon-chat-active", false, "akismet/akismetTree/comments"),
+                    CreateTreeNode("1", "-1", queryStrings, "Configuration", "icon-wrench", false, "akismet/akismet/configuration"),
+                    CreateTreeNode("2", "-1", queryStrings, "Spam Queue", "icon-conversation-alt", false, "akismet/akismet/spam-queue"),
+                    CreateTreeNode("3", "-1", queryStrings, "Comments", "icon-chat-active", false, "akismet/akismet/comments"),
                 };
 
                 return nodes;

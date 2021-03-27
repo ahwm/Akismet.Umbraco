@@ -100,11 +100,11 @@ namespace Akismet.Umbraco
             public string CommentType { get; set; }
 
             [Column("CommentText")]
-            [SpecialDbType(SpecialDbTypes.NTEXT)]
+            [SpecialDbType(SpecialDbTypes.NVARCHARMAX)]
             public string CommentText { get; set; }
 
             [Column("CommentData")]
-            [SpecialDbType(SpecialDbTypes.NTEXT)]
+            [SpecialDbType(SpecialDbTypes.NVARCHARMAX)]
             public string CommentData { get; set; }
 
             [Column("Result")]
@@ -149,11 +149,11 @@ namespace Akismet.Umbraco
         public string CommentType { get; set; }
 
         [Column("CommentText")]
-        [SpecialDbType(SpecialDbTypes.NTEXT)]
+        [SpecialDbType(SpecialDbTypes.NVARCHARMAX)]
         public string CommentText { get; set; }
 
         [Column("CommentData")]
-        [SpecialDbType(SpecialDbTypes.NTEXT)]
+        [SpecialDbType(SpecialDbTypes.NVARCHARMAX)]
         public string CommentData { get; set; }
 
         [Column("Result")]

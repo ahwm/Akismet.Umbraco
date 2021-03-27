@@ -1,4 +1,5 @@
 ﻿using Akismet.Net;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace Akismet.Umbraco.Controllers
             AkismetClient client = new AkismetClient(key, new Uri(blogUrl), "Umbraco CMS");
             return client.VerifyKey();
         }
-
+        
         public bool VerifyKey(string key, string blogUrl)
         {
             if (String.IsNullOrWhiteSpace(key) || String.IsNullOrWhiteSpace(blogUrl))
@@ -47,12 +48,34 @@ namespace Akismet.Umbraco.Controllers
             return client.VerifyKey();
         }
 
+        public int GetSpamCommentPageCount()
+        {
+            using (var scope = scopeProvider.CreateScope(autoComplete: true))
+            {
+                var sql = scope.SqlContext.Sql()
+                    .SelectCount<AkismetSubmission>(x => x.Id).From("AkismetSubmission").Where<AkismetSubmission>(x => x.SpamStatus == (int)SpamStatus.Spam);
+
+                return (int)Math.Ceiling(scope.Database.ExecuteScalar<int>(sql) / 20m);
+            }
+        }
+
+        public IEnumerable<AkismetSubmission> GetSpamComments(int page = 1)
+        {
+            using (var scope = scopeProvider.CreateScope(autoComplete: true))
+            {
+                var sql = scope.SqlContext.Sql()
+                    .Select("*").From("AkismetSubmission").Where<AkismetSubmission>(x => x.SpamStatus == (int)SpamStatus.Spam);
+
+                return scope.Database.Query<AkismetSubmission>(sql).Skip((page - 1) * 20).Take(20);
+            }
+        }
+
         public int GetCommentPageCount()
         {
             using (var scope = scopeProvider.CreateScope(autoComplete: true))
             {
                 var sql = scope.SqlContext.Sql()
-                    .SelectCount<AkismetSubmission>(x => x.Id).From("AkismetSubmission");
+                    .SelectCount<AkismetSubmission>(x => x.Id).From("AkismetSubmission").Where<AkismetSubmission>(x => x.SpamStatus != (int)SpamStatus.Spam);
 
                 return (int)Math.Ceiling(scope.Database.ExecuteScalar<int>(sql) / 20m);
             }
@@ -63,7 +86,7 @@ namespace Akismet.Umbraco.Controllers
             using (var scope = scopeProvider.CreateScope(autoComplete: true))
             {
                 var sql = scope.SqlContext.Sql()
-                    .Select("*").From("AkismetSubmission");
+                    .Select("*").From("AkismetSubmission").Where<AkismetSubmission>(x => x.SpamStatus != (int)SpamStatus.Spam);
 
                 return scope.Database.Query<AkismetSubmission>(sql).Skip((page - 1) * 20).Take(20);
             }
@@ -87,17 +110,68 @@ namespace Akismet.Umbraco.Controllers
             return AkismetService.GetConfig();
         }
 
-        public void DeleteComment(int id)
+        public void DeleteComment(string id)
         {
-            using (var scope = scopeProvider.CreateScope(autoComplete: false))
+            List<int> ids = id.Split(',').Select(x => Convert.ToInt32(x)).ToList();
+            using (var scope = scopeProvider.CreateScope(autoComplete: true))
             {
                 var sql = scope.SqlContext.Sql()
-                    .Delete().From("AkismetSubmission").Where<AkismetSubmission>(x => x.Id == id);
+                    .Delete().From("AkismetSubmission").Where<AkismetSubmission>(x => ids.Contains(x.Id));
 
                 scope.Database.Execute(sql);
 
                 scope.Complete();
             }
+        }
+
+        public void ReportHam(string id)
+        {
+            var config = AkismetService.GetConfig();
+            List<int> ids = id.Split(',').Select(x => Convert.ToInt32(x)).ToList();
+            using (var scope = scopeProvider.CreateScope(autoComplete: true))
+            {
+                var sql = scope.SqlContext.Sql()
+                    .Select("*").From("AkismetSubmission").Where<AkismetSubmission>(x => ids.Contains(x.Id));
+
+                var comments = scope.Database.Query<AkismetSubmission>(sql).ToList();
+
+                AkismetClient client = new AkismetClient(config["key"], new Uri(config["blogUrl"]), "Umbraco CMS");
+                foreach (var comment in comments)
+                {
+                    AkismetComment c = JsonConvert.DeserializeObject<AkismetComment>(comment.CommentData);
+                    c.CommentDate = comment.CommentDate.ToString("s");
+                    c.CommentType = comment.CommentType;
+                    client.SubmitHam(c);
+                }
+
+
+                sql = scope.SqlContext.Sql()
+                    .Update<AkismetSubmission>().From("AkismetSubmission").Where<AkismetSubmission>(x => ids.Contains(x.Id));
+            }
+            DeleteComment(id);
+        }
+
+        public void ReportSpam(string id)
+        {
+            var config = AkismetService.GetConfig();
+            List<int> ids = id.Split(',').Select(x => Convert.ToInt32(x)).ToList();
+            using (var scope = scopeProvider.CreateScope(autoComplete: true))
+            {
+                var sql = scope.SqlContext.Sql()
+                    .Select("*").From("AkismetSubmission").Where<AkismetSubmission>(x => ids.Contains(x.Id));
+
+                var comments = scope.Database.Query<AkismetSubmission>(sql).ToList();
+
+                AkismetClient client = new AkismetClient(config["key"], new Uri(config["blogUrl"]), "Umbraco CMS");
+                foreach (var comment in comments)
+                {
+                    AkismetComment c = JsonConvert.DeserializeObject<AkismetComment>(comment.CommentData);
+                    c.CommentDate = comment.CommentDate.ToString("s");
+                    c.CommentType = comment.CommentType;
+                    client.SubmitSpam(c);
+                }
+            }
+            DeleteComment(id);
         }
 
         public dynamic GetStats()

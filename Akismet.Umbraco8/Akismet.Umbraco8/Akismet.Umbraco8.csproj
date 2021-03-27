@@ -10,9 +10,10 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/ahwm/Akismet.Umbraco</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ahwm/Akismet.Umbraco</RepositoryUrl>
-    <PackageReleaseNotes>Dashboard bugfix.
-
-*PRERELEASE - DO NOT USE IN PRODUCTION WEBSITES* - database structure may change, but other changes should not cause breaking issues</PackageReleaseNotes>
+    <PackageReleaseNotes>Got comment queues working; please report issues at https://github.com/ahwm/Akismet.Umbraco </PackageReleaseNotes>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>0.1-beta.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -28,9 +29,6 @@
     <AllowedOutputExtensionsInPackageBuildOutputFolder>
       $(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb
     </AllowedOutputExtensionsInPackageBuildOutputFolder>
-    <PublishRepositoryUrl>true</PublishRepositoryUrl>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1-alpha2</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -50,11 +48,19 @@
       <Pack>true</Pack>
       <IncludeInPackage>True</IncludeInPackage>
     </Content>
-    <Content Include="App_Plugins\akismet\backoffice\akismetTree\configuration.html">
+    <Content Include="App_Plugins\akismet\akismetConfig.json">
       <Pack>true</Pack>
       <IncludeInPackage>True</IncludeInPackage>
     </Content>
-    <Content Include="App_Plugins\akismet\akismetConfig.json">
+    <Content Include="App_Plugins\akismet\backoffice\akismet\comments.html">
+      <Pack>true</Pack>
+      <IncludeInPackage>True</IncludeInPackage>
+    </Content>
+    <Content Include="App_Plugins\akismet\backoffice\akismet\configuration.html">
+      <Pack>true</Pack>
+      <IncludeInPackage>True</IncludeInPackage>
+    </Content>
+    <Content Include="App_Plugins\akismet\backoffice\akismet\spam-queue.html">
       <Pack>true</Pack>
       <IncludeInPackage>True</IncludeInPackage>
     </Content>
