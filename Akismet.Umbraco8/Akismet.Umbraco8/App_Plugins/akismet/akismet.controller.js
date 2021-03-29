@@ -184,7 +184,7 @@ angular.module("umbraco").controller("AkismetConfigController", function ($scope
         if (blogUrl.trim().length < 1 && valid) {
             vm.buttonState = "error";
             valid = false;
-            notificationsService.error("URL invalid - must be your site's home page");
+            notificationsService.error("URL invalid - it should be your site's home page");
         }
 
         if (valid) {
@@ -200,7 +200,7 @@ angular.module("umbraco").controller("AkismetConfigController", function ($scope
                     notificationsService.success("API key saved. Return to the overview to see more information.");
                 } else {
                     vm.buttonState = "error";
-                    notificationsService.error("API key invalid");
+                    notificationsService.error("API key invalid or another error occurred while saving the configuration. Ensure the key is accurate and that App_Plugins/akismet has write permissions.");
                 }
             });
         }
@@ -226,7 +226,7 @@ angular.module("umbraco").controller("AkismetConfigController", function ($scope
     }
 });
 
-angular.module("umbraco").controller("AkismetCommentsController", function ($scope, $http, notificationsService, listViewHelper) {
+angular.module("umbraco").controller("AkismetCommentsController", function ($scope, $http, notificationsService, listViewHelper, overlayService) {
     var vm = this;
     vm.page = {
         name: "Comments"

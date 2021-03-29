@@ -45,7 +45,21 @@ namespace Akismet.Umbraco.Controllers
                 return false;
 
             AkismetClient client = new AkismetClient(key, new Uri(blogUrl), "Umbraco CMS");
-            return client.VerifyKey();
+            bool isValid = client.VerifyKey();
+            if (isValid)
+            {
+                try
+                {
+                    AkismetService.SetConfig(key, blogUrl);
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+
+            return false;
         }
 
         public int GetSpamCommentPageCount()

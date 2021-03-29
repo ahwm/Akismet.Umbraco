@@ -28,6 +28,13 @@ namespace Akismet.Umbraco
             return config;
         }
 
+        internal void SetConfig(string key, string blogUrl)
+        {
+            string appData = System.Web.Hosting.HostingEnvironment.MapPath("~/App_Plugins/akismet");
+            var config = new Dictionary<string, string> { { "key", key }, { "blogUrl", blogUrl } };
+            File.WriteAllText(Path.Combine(appData, "akismetConfig.json"), JsonConvert.SerializeObject(config));
+        }
+
         /// <summary>
         /// 
         /// </summary>
