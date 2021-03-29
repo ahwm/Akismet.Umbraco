@@ -15,7 +15,9 @@ Install-Package Akismet.Umbraco8
 
 ### Install via Umbraco Package
 
-Download package from https://github.com/ahwm/Akismet.Umbraco/releases/latest
+* Download package from https://github.com/ahwm/Akismet.Umbraco/releases/latest
+* Or download from https://our.umbraco.com/packages/backoffice-extensions/akismet-dashboard/
+* Or install from the backoffice (search for akismet)
 
 Browse to Packages > Install Local in the Umbraco Backoffice
 
