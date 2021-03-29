@@ -83,7 +83,6 @@
             var date = new Intl.DateTimeFormat('en-US', { month: "long", year: "numeric" });
             var stats = document.getElementById('akismet-stats');
             var history = document.getElementById('akismet-history');
-            console.log(data);
             if (data.status == 200) {
                 var ul = document.createElement('ul');
                 var li = document.createElement('li');
@@ -145,8 +144,6 @@ angular.module("umbraco").controller("AkismetConfigController", function ($scope
     vm.page = {
         name: "Configuration"
     };
-    //console.log(vm);
-    //console.log($scope);
 
     $scope.name = "API Key";
 
@@ -159,7 +156,6 @@ angular.module("umbraco").controller("AkismetConfigController", function ($scope
             cache: false
         }).then(function (data) {
             // data: data, status, headers, config
-            //console.log(data);
             if (data.status == 200) {
                 document.getElementById('akismetKey').value = data.data.key;
                 document.getElementById('akismetUrl').value = data.data.blogUrl;
@@ -255,6 +251,7 @@ angular.module("umbraco").controller("AkismetCommentsController", function ($sco
         bulkActionsAllowed: true
     };
     vm.deleteState = "";
+    vm.spamState = "";
     var date = new Intl.DateTimeFormat('en-US', { dateStyle: "short", timeStyle: "short" });
 
     var init = function () {
@@ -263,7 +260,6 @@ angular.module("umbraco").controller("AkismetCommentsController", function ($sco
             url: '/Umbraco/backoffice/Api/AkismetApi/GetComments',
             cache: false
         }).then(function (data) {
-            //console.log(data);
             for (var i = 0; i < data.data.length; i++) {
                 var d = data.data[i];
                 vm.items.push({
@@ -303,14 +299,12 @@ angular.module("umbraco").controller("AkismetCommentsController", function ($sco
 
     function changePage(pageNumber) {
         if (pageNumber != undefined) {
-            //console.log(pageNumber);
             vm.items = [];
             $http({
                 method: 'GET',
                 url: '/Umbraco/backoffice/Api/AkismetApi/GetComments?page=' + pageNumber,
                 cache: false
             }).then(function (data) {
-                //console.log(data);
                 for (var i = 0; i < data.data.length; i++) {
                     var d = data.data[i];
                     vm.items.push({
@@ -335,11 +329,21 @@ angular.module("umbraco").controller("AkismetCommentsController", function ($sco
     }
  
     function clickItem(item) {
-        //alert("click node");
+        var data = JSON.parse(item.commentData);
+        var comment = `<p><strong>User Agent:</strong> ${data.UserAgent}</p><p><strong>Comment:</strong><br />${item.comment.replace('<', '&lt;').replace('>', '&gt;').replace('\n', `<br />`).replace('\r', `<br />`).replace('\r\n', `<br />`)}</p>`;
+        var confirm = {
+            title: "Comment Details",
+            view: "/App_Plugins/akismet/Views/Overlays/Comment.html",
+            content: comment,
+            closeButtonLabel: "Close",
+            close: function close() {
+                overlayService.close();
+            }
+        };
+        overlayService.open(confirm);
     }
  
     function selectItem(selectedItem, $index, $event) {
-        //console.log(vm.selection);
         listViewHelper.selectHandler(selectedItem, $index, vm.items, vm.selection, $event);
         toggleBulkActions();
     }
@@ -351,53 +355,75 @@ angular.module("umbraco").controller("AkismetCommentsController", function ($sco
     function sort(field, allow, isSystem) {
         if (allow) {
             listViewHelper.setSorting(field, allow, $scope.options);
-            //console.log($scope);
-            //$scope.getContent($scope.contentId);
         }
     }
 
     function toggleBulkActions() {
-        //console.log(document.getElementById('bulkActions'));
-        //console.log(vm.selection);
         document.getElementById('bulkActions').style.display = vm.selection.length > 0 ? null : "none";
     }
     
     function reportSpam() {
-        var confirm = window.confirm('Are you sure you wish to report the selected comments as spam? This action will also delete the comments and cannot be reversed.');
-        if (confirm) {
-            var ids = [];
-            for (var i = 0; i < vm.selection.length; i++) {
-                ids.push(vm.selection[i].id);
+        var confirm = {
+            title: "Report Spam?",
+            view: "default",
+            content: "Are you sure you wish to report the selected comments as spam? This action will also delete the comments and cannot be reversed.",
+            submitButtonLabel: "Report Spam",
+            closeButtonLabel: "Cancel",
+            submit: function submit() {
+                vm.spamState = "busy";
+                overlayService.close();
+                var ids = [];
+                for (var i = 0; i < vm.selection.length; i++) {
+                    ids.push(vm.selection[i].id);
+                }
+                $http({
+                    method: 'POST',
+                    url: '/Umbraco/backoffice/Api/AkismetApi/ReportSpam?id=' + ids.join(),
+                    cache: false
+                }).then(function (data) {
+                    changePage(1);
+                    vm.spamState = "success";
+                });
+            },
+            close: function close() {
+                overlayService.close();
             }
-            $http({
-                method: 'POST',
-                url: '/Umbraco/backoffice/Api/AkismetApi/ReportSpam?id=' + ids.join(),
-                cache: false
-            }).then(function (data) {
-                changePage(1);
-            });
-        }
+        };
+        overlayService.open(confirm);
     }
 
     function deleteComments() {
-        var confirm = window.confirm('Are you sure you wish to delete the selected comments? This action cannot be reversed.');
-        if (confirm) {
-            var ids = [];
-            for (var i = 0; i < vm.selection.length; i++) {
-                ids.push(vm.selection[i].id);
+        var confirm = {
+            title: "Delete Comment?",
+            view: "default",
+            content: "Are you sure you wish to delete the selected comments? This action cannot be reversed.",
+            submitButtonLabel: "Delete",
+            closeButtonLabel: "Cancel",
+            submit: function submit() {
+                vm.deleteState = "busy";
+                overlayService.close();
+                var ids = [];
+                for (var i = 0; i < vm.selection.length; i++) {
+                    ids.push(vm.selection[i].id);
+                }
+                $http({
+                    method: 'DELETE',
+                    url: '/Umbraco/backoffice/Api/AkismetApi/DeleteComment?id=' + ids.join(),
+                    cache: false
+                }).then(function (data) {
+                    vm.deleteState = "success";
+                    changePage(1);
+                });
+            },
+            close: function close() {
+                overlayService.close();
             }
-            $http({
-                method: 'DELETE',
-                url: '/Umbraco/backoffice/Api/AkismetApi/DeleteComment?id=' + ids.join(),
-                cache: false
-            }).then(function (data) {
-                changePage(1);
-            });
-        }
+        };
+        overlayService.open(confirm);
     }
 });
 
-angular.module("umbraco").controller("AkismetSpamQueueController", function ($scope, $http, notificationsService, listViewHelper) {
+angular.module("umbraco").controller("AkismetSpamQueueController", function ($scope, $http, notificationsService, listViewHelper, overlayService) {
     var vm = this;
     vm.page = {
         name: "Spam Queue"
@@ -422,6 +448,7 @@ angular.module("umbraco").controller("AkismetSpamQueueController", function ($sc
         bulkActionsAllowed: true
     };
     vm.deleteState = "";
+    vm.hamState = "";
     var date = new Intl.DateTimeFormat('en-US', { dateStyle: "short", timeStyle: "short" });
 
     var init = function () {
@@ -430,7 +457,6 @@ angular.module("umbraco").controller("AkismetSpamQueueController", function ($sc
             url: '/Umbraco/backoffice/Api/AkismetApi/GetSpamComments',
             cache: false
         }).then(function (data) {
-            //console.log(data);
             for (var i = 0; i < data.data.length; i++) {
                 var d = data.data[i];
                 vm.items.push({
@@ -438,7 +464,9 @@ angular.module("umbraco").controller("AkismetSpamQueueController", function ($sc
                     "date": date.format(new Date(d.CommentDate)),
                     "comment": d.CommentText,
                     "ip": d.UserIp,
-                    "id": d.Id
+                    "id": d.Id,
+                    "commentData": d.CommentData,
+                    "result": d.Result
                 })
             }
         });
@@ -466,17 +494,17 @@ angular.module("umbraco").controller("AkismetSpamQueueController", function ($sc
     vm.sort = sort;
     vm.changePage = changePage;
     vm.allowSelectAll = true;
+    vm.deleteComments = deleteComments;
+    vm.reportHam = reportHam;
 
     function changePage(pageNumber) {
         if (pageNumber != undefined) {
-            //console.log(pageNumber);
             vm.items = [];
             $http({
                 method: 'GET',
                 url: '/Umbraco/backoffice/Api/AkismetApi/GetSpamComments?page=' + pageNumber,
                 cache: false
             }).then(function (data) {
-                //console.log(data);
                 for (var i = 0; i < data.data.length; i++) {
                     var d = data.data[i];
                     vm.items.push({
@@ -484,7 +512,9 @@ angular.module("umbraco").controller("AkismetSpamQueueController", function ($sc
                         "date": date.format(new Date(d.CommentDate)),
                         "comment": d.CommentText,
                         "ip": d.UserIp,
-                        "id": d.Id
+                        "id": d.Id,
+                        "commentData": d.CommentData,
+                        "result": d.Result
                     })
                 }
             });
@@ -501,11 +531,21 @@ angular.module("umbraco").controller("AkismetSpamQueueController", function ($sc
     }
  
     function clickItem(item) {
-        //alert("click node");
+        var data = JSON.parse(item.commentData);
+        var comment = `<p><strong>User Agent:</strong> ${data.UserAgent}</p><p><strong>Comment:</strong><br />${item.comment.replace('<', '&lt;').replace('>', '&gt;').replace('\n', `<br />`).replace('\r', `<br />`).replace('\r\n', `<br />`)}</p>`;
+        var confirm = {
+            title: "Comment Details",
+            view: "/App_Plugins/akismet/Views/Overlays/Comment.html",
+            content: comment,
+            closeButtonLabel: "Close",
+            close: function close() {
+                overlayService.close();
+            }
+        };
+        overlayService.open(confirm);
     }
  
     function selectItem(selectedItem, $index, $event) {
-        //console.log(vm.selection);
         listViewHelper.selectHandler(selectedItem, $index, vm.items, vm.selection, $event);
         toggleBulkActions();
     }
@@ -517,48 +557,70 @@ angular.module("umbraco").controller("AkismetSpamQueueController", function ($sc
     function sort(field, allow, isSystem) {
         if (allow) {
             listViewHelper.setSorting(field, allow, $scope.options);
-            //console.log($scope);
-            //$scope.getContent($scope.contentId);
         }
     }
 
     function toggleBulkActions() {
-        console.log(document.getElementById('bulkActions'));
-        console.log(vm.selection);
         document.getElementById('bulkActions').style.display = vm.selection.length > 0 ? null : "none";
     }
 
     function reportHam() {
-        var confirm = window.confirm('Are you sure you wish to report the selected comments as ham? This action will move the comments out of the spam queue.');
-        if (confirm) {
-            var ids = [];
-            for (var i = 0; i < vm.selection.length; i++) {
-                ids.push(vm.selection[i].id);
+        var confirm = {
+            title: "Report Ham?",
+            view: "default",
+            content: "Are you sure you wish to report the selected comments as ham? This action will move the comments out of the spam queue.",
+            submitButtonLabel: "Report Ham",
+            closeButtonLabel: "Cancel",
+            submit: function submit() {
+                vm.hamState = "busy";
+                overlayService.close();
+                var ids = [];
+                for (var i = 0; i < vm.selection.length; i++) {
+                    ids.push(vm.selection[i].id);
+                }
+                $http({
+                    method: 'POST',
+                    url: '/Umbraco/backoffice/Api/AkismetApi/ReportHam?id=' + ids.join(),
+                    cache: false
+                }).then(function (data) {
+                    vm.hamState = "success";
+                    changePage(1);
+                });
+            },
+            close: function close() {
+                overlayService.close();
             }
-            $http({
-                method: 'POST',
-                url: '/Umbraco/backoffice/Api/AkismetApi/ReportHam?id=' + ids.join(),
-                cache: false
-            }).then(function (data) {
-                changePage(1);
-            });
-        }
+        };
+        overlayService.open(confirm);
     }
 
     function deleteComments() {
-        var confirm = window.confirm('Are you sure you wish to delete the selected comments? This action cannot be reversed.');
-        if (confirm) {
-            var ids = [];
-            for (var i = 0; i < vm.selection.length; i++) {
-                ids.push(vm.selection[i].id);
+        var confirm = {
+            title: "Delete Comment?",
+            view: "default",
+            content: "Are you sure you wish to delete the selected comments? This action cannot be reversed.",
+            submitButtonLabel: "Delete",
+            closeButtonLabel: "Cancel",
+            submit: function submit() {
+                vm.deleteState = "busy";
+                overlayService.close();
+                var ids = [];
+                for (var i = 0; i < vm.selection.length; i++) {
+                    ids.push(vm.selection[i].id);
+                }
+                $http({
+                    method: 'DELETE',
+                    url: '/Umbraco/backoffice/Api/AkismetApi/DeleteComment?id=' + ids.join(),
+                    cache: false
+                }).then(function (data) {
+                    vm.deleteState = "success";
+                    changePage(1);
+                });
+            },
+            close: function close() {
+                overlayService.close();
             }
-            $http({
-                method: 'DELETE',
-                url: '/Umbraco/backoffice/Api/AkismetApi/DeleteComment?id=' + ids.join(),
-                cache: false
-            }).then(function (data) {
-                changePage(1);
-            });
-        }
+        };
+        overlayService.open(confirm);
     }
 });

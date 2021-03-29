@@ -10,10 +10,10 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/ahwm/Akismet.Umbraco</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ahwm/Akismet.Umbraco</RepositoryUrl>
-    <PackageReleaseNotes>Got comment queues working; please report issues at https://github.com/ahwm/Akismet.Umbraco </PackageReleaseNotes>
+    <PackageReleaseNotes>Got everything working; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues </PackageReleaseNotes>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>0.1-beta.1</Version>
+    <Version>1.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -61,6 +61,10 @@
       <IncludeInPackage>True</IncludeInPackage>
     </Content>
     <Content Include="App_Plugins\akismet\backoffice\akismet\spam-queue.html">
+      <Pack>true</Pack>
+      <IncludeInPackage>True</IncludeInPackage>
+    </Content>
+    <Content Include="App_Plugins\akismet\Views\Overlays\Comment.html">
       <Pack>true</Pack>
       <IncludeInPackage>True</IncludeInPackage>
     </Content>

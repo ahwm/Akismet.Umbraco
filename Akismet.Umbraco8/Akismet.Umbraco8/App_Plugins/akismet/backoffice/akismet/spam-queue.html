@@ -54,7 +54,7 @@
             <umb-editor-footer>
                 <umb-editor-footer-content-right id="bulkActions" style="display:none;">
                     <umb-button type="button" button-style="success" action="vm.deleteComments()" label="Delete" disabled="vm.deleteState === 'busy'" state="vm.deleteState"></umb-button>
-                    <umb-button type="button" button-style="info" label="Report False Positive" disabled="vm.hamState === 'busy'" state="vm.hamState"></umb-button>
+                    <umb-button type="button" button-style="info" action="vm.reportHam()" label="Report False Positive" disabled="vm.hamState === 'busy'" state="vm.hamState"></umb-button>
                     <!--<umb-button action="vm.Save()" type="button" button-style="info" state="vm.buttonState" shortcut="ctrl+s" label="Save" disabled="vm.buttonState === 'busy'"></umb-button>-->
                     <!--<umb-button type="button" label="Return to list" button-style="info"></umb-button>-->
                 </umb-editor-footer-content-right>
