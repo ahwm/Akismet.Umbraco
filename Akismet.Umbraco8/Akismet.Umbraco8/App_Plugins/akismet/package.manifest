@@ -1,7 +1,0 @@
-﻿{
-    "javascript": [
-        "~/App_Plugins/akismet/akismet.controller.js"
-    ],
-    "css": [
-    ]
-}
