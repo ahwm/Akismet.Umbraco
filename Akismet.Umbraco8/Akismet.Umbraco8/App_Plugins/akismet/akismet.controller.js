@@ -267,7 +267,9 @@ angular.module("umbraco").controller("AkismetCommentsController", function ($sco
                     "date": date.format(new Date(d.CommentDate)),
                     "comment": d.CommentText,
                     "ip": d.UserIp,
-                    "id": d.Id
+                    "id": d.Id,
+                    "commentData": d.CommentData,
+                    "result": d.Result
                 })
             }
         });
@@ -296,6 +298,7 @@ angular.module("umbraco").controller("AkismetCommentsController", function ($sco
     vm.changePage = changePage;
     vm.allowSelectAll = true;
     vm.deleteComments = deleteComments;
+    vm.reportSpam = reportSpam;
 
     function changePage(pageNumber) {
         if (pageNumber != undefined) {
@@ -312,7 +315,9 @@ angular.module("umbraco").controller("AkismetCommentsController", function ($sco
                         "date": date.format(new Date(d.CommentDate)),
                         "comment": d.CommentText,
                         "ip": d.UserIp,
-                        "id": d.Id
+                        "id": d.Id,
+                        "commentData": d.CommentData,
+                        "result": d.Result
                     })
                 }
             });
