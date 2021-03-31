@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http.Formatting;
 using System.Web;
 using System.Web.Http.ModelBinding;
+using umbraco.BusinessLogic.Actions;
 using Umbraco.Core;
 using Umbraco.Web.Models.Trees;
 using Umbraco.Web.Mvc;
@@ -12,7 +13,7 @@ using Umbraco.Web.WebApi.Filters;
 
 namespace Akismet.Umbraco.Controllers
 {
-    [Tree("akismet", "akismet", TreeTitle = "Akismet", SortOrder = 1)]
+    [Tree("akismet", "akismet", title: "Akismet", sortOrder: 1)]
     [PluginController("akismet")]
     public class AkismetTreeController : TreeController
     {
@@ -32,7 +33,7 @@ namespace Akismet.Umbraco.Controllers
             return root;
         }
 
-        protected override MenuItemCollection GetMenuForNode(string id, [ModelBinder(typeof(HttpQueryStringModelBinder))] FormDataCollection queryStrings)
+        protected override MenuItemCollection GetMenuForNode(string id, FormDataCollection queryStrings)
         {
             var menu = new MenuItemCollection();
 
@@ -40,16 +41,16 @@ namespace Akismet.Umbraco.Controllers
             {
                 // root actions, perhaps users can create new items in this tree, or perhaps it's not a content tree, it might be a read only tree, or each node item might represent something entirely different...
                 // add your menu item actions or custom ActionMenuItems
-                menu.Items.Add(new CreateChildEntity(Services.TextService));
+                menu.Items.Add<CreateChildEntity, ActionNew>("actions");
                 // add refresh menu item (note no dialog)
-                menu.Items.Add(new RefreshNode(Services.TextService, true));
+                menu.Items.Add<RefreshNode, ActionRefresh>("actions");
                 return menu;
             }
 
             return menu;
         }
 
-        protected override TreeNodeCollection GetTreeNodes(string id, [ModelBinder(typeof(HttpQueryStringModelBinder))] FormDataCollection queryStrings)
+        protected override TreeNodeCollection GetTreeNodes(string id, FormDataCollection queryStrings)
         {
             // check if we're rendering the root node's children
             if (id == Constants.System.Root.ToInvariantString())
