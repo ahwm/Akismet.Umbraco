@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net472</TargetFramework>
@@ -13,7 +13,7 @@
     <PackageReleaseNotes>Got everything working; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues </PackageReleaseNotes>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.0</Version>
+    <Version>1.0.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
@@ -32,4 +32,16 @@
       $(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb
     </AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Remove="C:\Users\Adam\.nuget\packages\akismet.umbraco8\1.0.0\contentFiles\any\net472\App_Plugins\akismet\akismet.controller.js" />
+    <Content Remove="C:\Users\Adam\.nuget\packages\akismet.umbraco8\1.0.0\contentFiles\any\net472\App_Plugins\akismet\akismetConfig.json" />
+    <Content Remove="C:\Users\Adam\.nuget\packages\akismet.umbraco8\1.0.0\contentFiles\any\net472\App_Plugins\akismet\backoffice\akismet\comments.html" />
+    <Content Remove="C:\Users\Adam\.nuget\packages\akismet.umbraco8\1.0.0\contentFiles\any\net472\App_Plugins\akismet\backoffice\akismet\configuration.html" />
+    <Content Remove="C:\Users\Adam\.nuget\packages\akismet.umbraco8\1.0.0\contentFiles\any\net472\App_Plugins\akismet\backoffice\akismet\spam-queue.html" />
+    <Content Remove="C:\Users\Adam\.nuget\packages\akismet.umbraco8\1.0.0\contentFiles\any\net472\App_Plugins\akismet\lang\en-us.xml" />
+    <Content Remove="C:\Users\Adam\.nuget\packages\akismet.umbraco8\1.0.0\contentFiles\any\net472\App_Plugins\akismet\overview.html" />
+    <Content Remove="C:\Users\Adam\.nuget\packages\akismet.umbraco8\1.0.0\contentFiles\any\net472\App_Plugins\akismet\package.manifest" />
+    <Content Remove="C:\Users\Adam\.nuget\packages\akismet.umbraco8\1.0.0\contentFiles\any\net472\App_Plugins\akismet\Views\Overlays\Comment.html" />
+  </ItemGroup>
 </Project>
