@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Umbraco.Core.Dashboards;
+using Umbraco.Cms.Core.Dashboards;
 
 namespace Akismet.Umbraco
 {

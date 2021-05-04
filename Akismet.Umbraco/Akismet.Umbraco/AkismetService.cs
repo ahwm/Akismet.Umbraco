@@ -3,7 +3,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Umbraco.Core.Scoping;
+using Umbraco.Cms.Core.Scoping;
 
 namespace Akismet.Umbraco
 {
@@ -18,7 +18,7 @@ namespace Akismet.Umbraco
 
         internal Dictionary<string, string> GetConfig()
         {
-            string appData = System.Web.Hosting.HostingEnvironment.MapPath("~/App_Plugins/akismet");
+            string appData = MapPath(AppDomain.CurrentDomain, "~/App_Plugins/akismet");
             if (!File.Exists(Path.Combine(appData, "akismetConfig.json")))
                 return new Dictionary<string, string> { { "key", "" }, { "blogUrl", "" } };
             Dictionary<string, string> config = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(Path.Combine(appData, "akismetConfig.json")));
@@ -30,7 +30,7 @@ namespace Akismet.Umbraco
 
         internal void SetConfig(string key, string blogUrl)
         {
-            string appData = System.Web.Hosting.HostingEnvironment.MapPath("~/App_Plugins/akismet");
+            string appData = MapPath(AppDomain.CurrentDomain, "~/App_Plugins/akismet");
             var config = new Dictionary<string, string> { { "key", key }, { "blogUrl", blogUrl } };
             File.WriteAllText(Path.Combine(appData, "akismetConfig.json"), JsonConvert.SerializeObject(config));
         }
@@ -77,6 +77,14 @@ namespace Akismet.Umbraco
                 return result.SpamStatus == SpamStatus.Ham;
             else
                 return result.SpamStatus != SpamStatus.Spam;
+        }
+
+        internal static string MapPath(AppDomain domain, string path)
+        {
+            if (!path.StartsWith("~/"))
+                return path;
+
+            return Path.Combine(domain.BaseDirectory, path.Replace("~/", ""));
         }
     }
 }
