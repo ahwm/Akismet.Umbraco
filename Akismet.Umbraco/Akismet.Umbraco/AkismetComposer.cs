@@ -3,6 +3,7 @@ using NPoco;
 using System;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
+using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Migrations;
@@ -11,6 +12,14 @@ using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
 
 namespace Akismet.Umbraco
 {
+    public class AkismetUserComposer : IUserComposer
+    {
+        public void Compose(IUmbracoBuilder builder)
+        {
+            builder.Sections().Append<AkismetSection>();
+        }
+    }
+
     public class AkismetComposer : ComponentComposer<AkismetComponent>, IUserComposer
     { }
 
