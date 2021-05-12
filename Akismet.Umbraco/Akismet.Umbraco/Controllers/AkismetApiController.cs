@@ -1,16 +1,22 @@
 ﻿using Akismet.Net;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Umbraco.Cms.Core.Scoping;
+using Umbraco.Cms.Core.Web;
 using Umbraco.Cms.Web.BackOffice.Controllers;
+using Umbraco.Cms.Web.Common.Attributes;
+using Umbraco.Cms.Web.Common.Controllers;
 using Umbraco.Extensions;
+using Constants = Umbraco.Cms.Core.Constants;
 
 namespace Akismet.Umbraco.Controllers
 {
-    public class AkismetApiController : UmbracoAuthorizedApiController
+    [PluginController(Constants.Web.Mvc.BackOfficeApiArea)]
+    public class AkismetApiController : UmbracoAuthorizedJsonController
     {
         // /Umbraco/backoffice/Api/AkismetApi
 
@@ -23,7 +29,7 @@ namespace Akismet.Umbraco.Controllers
             AkismetService = akismetService;
         }
 
-        public bool VerifyKey()
+        public bool VerifyStoredKey()
         {
             string key, blogUrl;
             var config = AkismetService.GetConfig();

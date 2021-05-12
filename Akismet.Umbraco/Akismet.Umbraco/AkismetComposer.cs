@@ -5,10 +5,12 @@ using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Scoping;
+using Umbraco.Cms.Core.Sections;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Migrations;
 using Umbraco.Cms.Infrastructure.Migrations.Upgrade;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
+using Umbraco.Extensions;
 
 namespace Akismet.Umbraco
 {
@@ -16,7 +18,8 @@ namespace Akismet.Umbraco
     {
         public void Compose(IUmbracoBuilder builder)
         {
-            builder.Sections().Append<AkismetSection>();
+            builder.Sections().InsertBefore<PackagesSection, AkismetSection>();
+            builder.AddAkismet();
         }
     }
 

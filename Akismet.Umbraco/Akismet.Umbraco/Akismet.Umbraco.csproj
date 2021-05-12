@@ -10,14 +10,15 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/ahwm/Akismet.Umbraco</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ahwm/Akismet.Umbraco</RepositoryUrl>
-    <PackageReleaseNotes>Initial Umbraco 9 release; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues </PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed missing plugin files; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues </PackageReleaseNotes>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.0-beta2</Version>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Umbraco.Cms" Version="9.0.0-beta001" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="9.0.0-beta001" />
+    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="9.0.0-beta001" />
     <PackageReference Include="AkismetApi.Net" Version="[1.1.1]" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -32,41 +33,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Include="App_Plugins\akismet\package.manifest">
+    <Content Include="App_Plugins\akismet\**\*.*">
       <Pack>true</Pack>
+      <PackagePath>contentFiles\any\any\App_Plugins\akismet\;content\any\any\App_Plugins\akismet\</PackagePath>
       <IncludeInPackage>True</IncludeInPackage>
-    </Content>
-    <Content Include="App_Plugins\akismet\overview.html">
-      <Pack>true</Pack>
-      <IncludeInPackage>True</IncludeInPackage>
-    </Content>
-    <Content Include="App_Plugins\akismet\akismet.controller.js">
-      <Pack>true</Pack>
-      <IncludeInPackage>True</IncludeInPackage>
-    </Content>
-    <Content Include="App_Plugins\akismet\lang\en-us.xml">
-      <Pack>true</Pack>
-      <IncludeInPackage>True</IncludeInPackage>
-    </Content>
-    <Content Include="App_Plugins\akismet\akismetConfig.json">
-      <Pack>true</Pack>
-      <IncludeInPackage>True</IncludeInPackage>
-    </Content>
-    <Content Include="App_Plugins\akismet\backoffice\akismet\comments.html">
-      <Pack>true</Pack>
-      <IncludeInPackage>True</IncludeInPackage>
-    </Content>
-    <Content Include="App_Plugins\akismet\backoffice\akismet\configuration.html">
-      <Pack>true</Pack>
-      <IncludeInPackage>True</IncludeInPackage>
-    </Content>
-    <Content Include="App_Plugins\akismet\backoffice\akismet\spam-queue.html">
-      <Pack>true</Pack>
-      <IncludeInPackage>True</IncludeInPackage>
-    </Content>
-    <Content Include="App_Plugins\akismet\Views\Overlays\Comment.html">
-      <Pack>true</Pack>
-      <IncludeInPackage>True</IncludeInPackage>
+      <PackageCopyToOutput>true</PackageCopyToOutput>
     </Content>
   </ItemGroup>
 </Project>

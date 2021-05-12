@@ -3,10 +3,22 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Scoping;
+using Umbraco.Extensions;
 
 namespace Akismet.Umbraco
 {
+    public static class ServicesConfiguration
+    {
+        public static IUmbracoBuilder AddAkismet(this IUmbracoBuilder builder)
+        {
+            builder.Services.AddUnique<AkismetService>();
+
+            return builder;
+        }
+    }
+
     public class AkismetService
     {
         private readonly IScopeProvider scopeProvider;
@@ -16,7 +28,7 @@ namespace Akismet.Umbraco
             scopeProvider = provider;
         }
 
-        internal Dictionary<string, string> GetConfig()
+        internal static Dictionary<string, string> GetConfig()
         {
             string appData = MapPath(AppDomain.CurrentDomain, "~/App_Plugins/akismet");
             if (!File.Exists(Path.Combine(appData, "akismetConfig.json")))
@@ -28,7 +40,7 @@ namespace Akismet.Umbraco
             return config;
         }
 
-        internal void SetConfig(string key, string blogUrl)
+        internal static void SetConfig(string key, string blogUrl)
         {
             string appData = MapPath(AppDomain.CurrentDomain, "~/App_Plugins/akismet");
             var config = new Dictionary<string, string> { { "key", key }, { "blogUrl", blogUrl } };
