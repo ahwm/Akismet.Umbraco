@@ -1,18 +1,13 @@
 ﻿using Akismet.Net;
-using Akismet.Umbraco;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using Umbraco.Forms.Core;
 using Umbraco.Forms.Core.Attributes;
 using Umbraco.Forms.Core.Enums;
-using io = System.IO;
-using Newtonsoft.Json;
 using System.Net.Mail;
 using System.Text;
 using Umbraco.Forms.Core.Persistence.Dtos;
-using System.Web.Hosting;
 
 namespace Akismet.Umbraco.Forms.Workflows
 {
@@ -116,7 +111,6 @@ namespace Akismet.Umbraco.Forms.Workflows
                     m.Subject = Subject.Replace("{form_name}", e.Form.Name);
                     m.Body = body.ToString();
                     m.IsBodyHtml = true;
-
 
                     using (SmtpClient c = new SmtpClient())
                     {
