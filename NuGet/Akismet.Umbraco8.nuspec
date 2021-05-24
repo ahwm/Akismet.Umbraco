@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <!-- Required elements-->
+        <id>Akismet.Umbraco8</id>
+        <version>1.1</version>
+        <description>Akismet for Umbraco 8</description>
+        <authors>Adam Humpherys</authors>
+		<license type="expression">MIT</license>
+		<releaseNotes></releaseNotes>
+		<repository type="git" url="https://github.com/ahwm/Akismet.Umbraco" />
+		<projectUrl>https://github.com/ahwm/Akismet.Umbraco</projectUrl>
+		<requireLicenseAcceptance>false</requireLicenseAcceptance>
+
+        <dependencies>
+			<dependency id="Akismet.Umbraco8.Core" version="1.0" />
+		</dependencies>
+    </metadata>
+</package>
