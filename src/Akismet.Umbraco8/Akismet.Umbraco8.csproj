@@ -10,7 +10,7 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/ahwm/Akismet.Umbraco</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ahwm/Akismet.Umbraco</RepositoryUrl>
-    <PackageReleaseNotes>Comments page bugfix; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues </PackageReleaseNotes>
+    <PackageReleaseNotes>Separated source from backoffice plugin; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues</PackageReleaseNotes>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Version>1.0</Version>
