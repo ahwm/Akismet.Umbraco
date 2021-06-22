@@ -13,25 +13,25 @@ using Umbraco.Web.WebApi.Filters;
 
 namespace Akismet.Umbraco.Controllers
 {
-    [Tree("akismet", "akismet", title: "Akismet", sortOrder: 1)]
+    [Tree("akismet", "akismet", title: "Akismet", sortOrder: 2)]
     [PluginController("akismet")]
     public class AkismetTreeController : TreeController
     {
-        protected override TreeNode CreateRootNode(FormDataCollection queryStrings)
-        {
-            var root = base.CreateRootNode(queryStrings);
+        //protected override TreeNode CreateRootNode(FormDataCollection queryStrings)
+        //{
+        //    var root = base.CreateRootNode(queryStrings);
 
-            root.RoutePath = string.Format("{0}/{1}", "akismet", "overview");
+        //    //root.RoutePath = string.Format("{0}/{1}", "akismet", "overview");
 
-            // set the icon
-            //root.Icon = "icon-wrench";
-            // could be set to false for a custom tree with a single node.
-            root.HasChildren = true;
-            //url for menu
-            root.MenuUrl = null;
+        //    // set the icon
+        //    //root.Icon = "icon-wrench";
+        //    // could be set to false for a custom tree with a single node.
+        //    root.HasChildren = false;
+        //    //url for menu
+        //    root.MenuUrl = null;
 
-            return root;
-        }
+        //    return root;
+        //}
 
         protected override MenuItemCollection GetMenuForNode(string id, FormDataCollection queryStrings)
         {

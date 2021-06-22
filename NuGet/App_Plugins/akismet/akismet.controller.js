@@ -7,7 +7,7 @@
         init();
     });
 
-    var init = function () {
+    function init() {
         $http({
             method: 'POST',
             url: '/Umbraco/backoffice/Api/AkismetApi/VerifyKey',
@@ -16,7 +16,8 @@
             // data: data, status, headers, config
             vm.loading = false;
             document.getElementById('akismet-status').style.display = null;
-            if (data.data) {
+            
+            if (data.data === 'true') {
                 document.getElementById('akismet-status').classList.add("alert", "alert-success");
                 document.getElementById('akismet-status').innerText = "API Key Valid!";
                 
@@ -30,7 +31,7 @@
         });
     };
 
-    var getAccount = function () {
+    function getAccount() {
         $http({
             method: 'GET',
             url: '/Umbraco/backoffice/Api/AkismetApi/GetAccount',
@@ -71,7 +72,7 @@
         });
     };
 
-    var getStats = function () {
+    function getStats() {
         $http({
             method: 'GET',
             url: '/Umbraco/backoffice/Api/AkismetApi/GetStats',
@@ -166,7 +167,7 @@ angular.module("umbraco").controller("AkismetConfigController", function ($scope
     };
 
     angular.element(function () {
-        init();
+        setTimeout(function () { init(); }, 500);
     });
 
     vm.Save = function () {
@@ -226,7 +227,7 @@ angular.module("umbraco").controller("AkismetConfigController", function ($scope
     }
 });
 
-angular.module("umbraco").controller("AkismetCommentsController", function ($scope, $http, notificationsService, listViewHelper, overlayService) {
+angular.module("umbraco").controller("AkismetCommentsController", function ($scope, $http, notificationsService, listViewHelper) {
     var vm = this;
     vm.page = {
         name: "Comments"
@@ -320,36 +321,37 @@ angular.module("umbraco").controller("AkismetCommentsController", function ($sco
     }
  
     function selectAll($event) {
-        listViewHelper.selectAllItemsToggle(vm.items, vm.selection);
-        toggleBulkActions();
+        //listViewHelper.selectAllItemsToggle(vm.items, vm.selection);
+        //toggleBulkActions();
     }
  
     function isSelectedAll() {
-        return listViewHelper.isSelectedAll(vm.items, vm.selection);
+        //return listViewHelper.isSelectedAll(vm.items, vm.selection);
     }
  
     function clickItem(item) {
-        var data = JSON.parse(item.commentData);
-        var comment = `<p><strong>User Agent:</strong> ${data.UserAgent}</p><p><strong>Comment:</strong><br />${item.comment.replace('<', '&lt;').replace('>', '&gt;').replace('\n', `<br />`).replace('\r', `<br />`).replace('\r\n', `<br />`)}</p>`;
-        var confirm = {
-            title: "Comment Details",
-            view: "/App_Plugins/akismet/Views/Overlays/Comment.html",
-            content: comment,
-            closeButtonLabel: "Close",
-            close: function close() {
-                overlayService.close();
-            }
-        };
-        overlayService.open(confirm);
+        console.log(item);
+        //var data = JSON.parse(item.commentData);
+        //var comment = `<p><strong>User Agent:</strong> ${data.UserAgent}</p><p><strong>Comment:</strong><br />${item.comment.replace('<', '&lt;').replace('>', '&gt;').replace('\n', `<br />`).replace('\r', `<br />`).replace('\r\n', `<br />`)}</p>`;
+        //var confirm = {
+        //    title: "Comment Details",
+        //    view: "/App_Plugins/akismet/Views/Overlays/Comment.html",
+        //    content: comment,
+        //    closeButtonLabel: "Close",
+        //    close: function close() {
+        //        overlayService.close();
+        //    }
+        //};
+        //overlayService.open(confirm);
     }
  
     function selectItem(selectedItem, $index, $event) {
-        listViewHelper.selectHandler(selectedItem, $index, vm.items, vm.selection, $event);
-        toggleBulkActions();
+        //listViewHelper.selectHandler(selectedItem, $index, vm.items, vm.selection, $event);
+        //toggleBulkActions();
     }
         
     function isSortDirection(col, direction) {
-        return listViewHelper.setSortingDirection(col, direction, $scope.options);
+        //return listViewHelper.setSortingDirection(col, direction, $scope.options);
     }
         
     function sort(field, allow, isSystem) {
@@ -363,67 +365,67 @@ angular.module("umbraco").controller("AkismetCommentsController", function ($sco
     }
     
     function reportSpam() {
-        var confirm = {
-            title: "Report Spam?",
-            view: "default",
-            content: "Are you sure you wish to report the selected comments as spam? This action will also delete the comments and cannot be reversed.",
-            submitButtonLabel: "Report Spam",
-            closeButtonLabel: "Cancel",
-            submit: function submit() {
-                vm.spamState = "busy";
-                overlayService.close();
-                var ids = [];
-                for (var i = 0; i < vm.selection.length; i++) {
-                    ids.push(vm.selection[i].id);
-                }
-                $http({
-                    method: 'POST',
-                    url: '/Umbraco/backoffice/Api/AkismetApi/ReportSpam?id=' + ids.join(),
-                    cache: false
-                }).then(function (data) {
-                    changePage(1);
-                    vm.spamState = "success";
-                });
-            },
-            close: function close() {
-                overlayService.close();
-            }
-        };
-        overlayService.open(confirm);
+        //var confirm = {
+        //    title: "Report Spam?",
+        //    view: "default",
+        //    content: "Are you sure you wish to report the selected comments as spam? This action will also delete the comments and cannot be reversed.",
+        //    submitButtonLabel: "Report Spam",
+        //    closeButtonLabel: "Cancel",
+        //    submit: function submit() {
+        //        vm.spamState = "busy";
+        //        overlayService.close();
+        //        var ids = [];
+        //        for (var i = 0; i < vm.selection.length; i++) {
+        //            ids.push(vm.selection[i].id);
+        //        }
+        //        $http({
+        //            method: 'POST',
+        //            url: '/Umbraco/backoffice/Api/AkismetApi/ReportSpam?id=' + ids.join(),
+        //            cache: false
+        //        }).then(function (data) {
+        //            changePage(1);
+        //            vm.spamState = "success";
+        //        });
+        //    },
+        //    close: function close() {
+        //        overlayService.close();
+        //    }
+        //};
+        //overlayService.open(confirm);
     }
 
     function deleteComments() {
-        var confirm = {
-            title: "Delete Comment?",
-            view: "default",
-            content: "Are you sure you wish to delete the selected comments? This action cannot be reversed.",
-            submitButtonLabel: "Delete",
-            closeButtonLabel: "Cancel",
-            submit: function submit() {
-                vm.deleteState = "busy";
-                overlayService.close();
-                var ids = [];
-                for (var i = 0; i < vm.selection.length; i++) {
-                    ids.push(vm.selection[i].id);
-                }
-                $http({
-                    method: 'DELETE',
-                    url: '/Umbraco/backoffice/Api/AkismetApi/DeleteComment?id=' + ids.join(),
-                    cache: false
-                }).then(function (data) {
-                    vm.deleteState = "success";
-                    changePage(1);
-                });
-            },
-            close: function close() {
-                overlayService.close();
-            }
-        };
-        overlayService.open(confirm);
+        //var confirm = {
+        //    title: "Delete Comment?",
+        //    view: "default",
+        //    content: "Are you sure you wish to delete the selected comments? This action cannot be reversed.",
+        //    submitButtonLabel: "Delete",
+        //    closeButtonLabel: "Cancel",
+        //    submit: function submit() {
+        //        vm.deleteState = "busy";
+        //        overlayService.close();
+        //        var ids = [];
+        //        for (var i = 0; i < vm.selection.length; i++) {
+        //            ids.push(vm.selection[i].id);
+        //        }
+        //        $http({
+        //            method: 'DELETE',
+        //            url: '/Umbraco/backoffice/Api/AkismetApi/DeleteComment?id=' + ids.join(),
+        //            cache: false
+        //        }).then(function (data) {
+        //            vm.deleteState = "success";
+        //            changePage(1);
+        //        });
+        //    },
+        //    close: function close() {
+        //        overlayService.close();
+        //    }
+        //};
+        //overlayService.open(confirm);
     }
 });
 
-angular.module("umbraco").controller("AkismetSpamQueueController", function ($scope, $http, notificationsService, listViewHelper, overlayService) {
+angular.module("umbraco").controller("AkismetSpamQueueController", function ($scope, $http, notificationsService, listViewHelper) {
     var vm = this;
     vm.page = {
         name: "Spam Queue"
@@ -522,36 +524,37 @@ angular.module("umbraco").controller("AkismetSpamQueueController", function ($sc
     }
  
     function selectAll($event) {
-        listViewHelper.selectAllItemsToggle(vm.items, vm.selection);
-        toggleBulkActions();
+        //listViewHelper.selectAllItemsToggle(vm.items, vm.selection);
+        //toggleBulkActions();
     }
  
     function isSelectedAll() {
-        return listViewHelper.isSelectedAll(vm.items, vm.selection);
+        //return listViewHelper.isSelectedAll(vm.items, vm.selection);
     }
  
     function clickItem(item) {
-        var data = JSON.parse(item.commentData);
-        var comment = `<p><strong>User Agent:</strong> ${data.UserAgent}</p><p><strong>Comment:</strong><br />${item.comment.replace('<', '&lt;').replace('>', '&gt;').replace('\n', `<br />`).replace('\r', `<br />`).replace('\r\n', `<br />`)}</p>`;
-        var confirm = {
-            title: "Comment Details",
-            view: "/App_Plugins/akismet/Views/Overlays/Comment.html",
-            content: comment,
-            closeButtonLabel: "Close",
-            close: function close() {
-                overlayService.close();
-            }
-        };
-        overlayService.open(confirm);
+        console.log(item);
+        //var data = JSON.parse(item.commentData);
+        //var comment = `<p><strong>User Agent:</strong> ${data.UserAgent}</p><p><strong>Comment:</strong><br />${item.comment.replace('<', '&lt;').replace('>', '&gt;').replace('\n', `<br />`).replace('\r', `<br />`).replace('\r\n', `<br />`)}</p>`;
+        //var confirm = {
+        //    title: "Comment Details",
+        //    view: "/App_Plugins/akismet/Views/Overlays/Comment.html",
+        //    content: comment,
+        //    closeButtonLabel: "Close",
+        //    close: function close() {
+        //        overlayService.close();
+        //    }
+        //};
+        //overlayService.open(confirm);
     }
  
     function selectItem(selectedItem, $index, $event) {
-        listViewHelper.selectHandler(selectedItem, $index, vm.items, vm.selection, $event);
-        toggleBulkActions();
+        //listViewHelper.selectHandler(selectedItem, $index, vm.items, vm.selection, $event);
+        //toggleBulkActions();
     }
         
     function isSortDirection(col, direction) {
-        return listViewHelper.setSortingDirection(col, direction, $scope.options);
+        //return listViewHelper.setSortingDirection(col, direction, $scope.options);
     }
         
     function sort(field, allow, isSystem) {
@@ -565,62 +568,62 @@ angular.module("umbraco").controller("AkismetSpamQueueController", function ($sc
     }
 
     function reportHam() {
-        var confirm = {
-            title: "Report Ham?",
-            view: "default",
-            content: "Are you sure you wish to report the selected comments as ham? This action will move the comments out of the spam queue.",
-            submitButtonLabel: "Report Ham",
-            closeButtonLabel: "Cancel",
-            submit: function submit() {
-                vm.hamState = "busy";
-                overlayService.close();
-                var ids = [];
-                for (var i = 0; i < vm.selection.length; i++) {
-                    ids.push(vm.selection[i].id);
-                }
-                $http({
-                    method: 'POST',
-                    url: '/Umbraco/backoffice/Api/AkismetApi/ReportHam?id=' + ids.join(),
-                    cache: false
-                }).then(function (data) {
-                    vm.hamState = "success";
-                    changePage(1);
-                });
-            },
-            close: function close() {
-                overlayService.close();
-            }
-        };
-        overlayService.open(confirm);
+        //var confirm = {
+        //    title: "Report Ham?",
+        //    view: "default",
+        //    content: "Are you sure you wish to report the selected comments as ham? This action will move the comments out of the spam queue.",
+        //    submitButtonLabel: "Report Ham",
+        //    closeButtonLabel: "Cancel",
+        //    submit: function submit() {
+        //        vm.hamState = "busy";
+        //        overlayService.close();
+        //        var ids = [];
+        //        for (var i = 0; i < vm.selection.length; i++) {
+        //            ids.push(vm.selection[i].id);
+        //        }
+        //        $http({
+        //            method: 'POST',
+        //            url: '/Umbraco/backoffice/Api/AkismetApi/ReportHam?id=' + ids.join(),
+        //            cache: false
+        //        }).then(function (data) {
+        //            vm.hamState = "success";
+        //            changePage(1);
+        //        });
+        //    },
+        //    close: function close() {
+        //        overlayService.close();
+        //    }
+        //};
+        //overlayService.open(confirm);
     }
 
     function deleteComments() {
-        var confirm = {
-            title: "Delete Comment?",
-            view: "default",
-            content: "Are you sure you wish to delete the selected comments? This action cannot be reversed.",
-            submitButtonLabel: "Delete",
-            closeButtonLabel: "Cancel",
-            submit: function submit() {
-                vm.deleteState = "busy";
-                overlayService.close();
-                var ids = [];
-                for (var i = 0; i < vm.selection.length; i++) {
-                    ids.push(vm.selection[i].id);
-                }
-                $http({
-                    method: 'DELETE',
-                    url: '/Umbraco/backoffice/Api/AkismetApi/DeleteComment?id=' + ids.join(),
-                    cache: false
-                }).then(function (data) {
-                    vm.deleteState = "success";
-                    changePage(1);
-                });
-            },
-            close: function close() {
-                overlayService.close();
-            }
-        };
-        overlayService.open(confirm);
+        //var confirm = {
+        //    title: "Delete Comment?",
+        //    view: "default",
+        //    content: "Are you sure you wish to delete the selected comments? This action cannot be reversed.",
+        //    submitButtonLabel: "Delete",
+        //    closeButtonLabel: "Cancel",
+        //    submit: function submit() {
+        //        vm.deleteState = "busy";
+        //        overlayService.close();
+        //        var ids = [];
+        //        for (var i = 0; i < vm.selection.length; i++) {
+        //            ids.push(vm.selection[i].id);
+        //        }
+        //        $http({
+        //            method: 'DELETE',
+        //            url: '/Umbraco/backoffice/Api/AkismetApi/DeleteComment?id=' + ids.join(),
+        //            cache: false
+        //        }).then(function (data) {
+        //            vm.deleteState = "success";
+        //            changePage(1);
+        //        });
+        //    },
+        //    close: function close() {
+        //        overlayService.close();
+        //    }
+        //};
+        //overlayService.open(confirm);
     }
 });

@@ -3,20 +3,25 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Umbraco.Core;
 using Umbraco.Core.Scoping;
+using Umbraco.Web;
 
 namespace Akismet.Umbraco
 {
     public class AkismetService
     {
-        private readonly IScopeProvider scopeProvider;
+        //private readonly IScopeProvider scopeProvider;
 
-        public AkismetService(IScopeProvider provider)
-        {
-            scopeProvider = provider;
-        }
+        //public AkismetService(IScopeProvider provider)
+        //{
+        //    scopeProvider = provider;
+        //}
 
-        internal Dictionary<string, string> GetConfig()
+        //public AkismetService()
+        //{ }
+
+        internal static Dictionary<string, string> GetConfig()
         {
             string appData = System.Web.Hosting.HostingEnvironment.MapPath("~/App_Plugins/akismet");
             if (!File.Exists(Path.Combine(appData, "akismetConfig.json")))
@@ -28,7 +33,7 @@ namespace Akismet.Umbraco
             return config;
         }
 
-        internal void SetConfig(string key, string blogUrl)
+        internal static void SetConfig(string key, string blogUrl)
         {
             string appData = System.Web.Hosting.HostingEnvironment.MapPath("~/App_Plugins/akismet");
             var config = new Dictionary<string, string> { { "key", key }, { "blogUrl", blogUrl } };
@@ -41,7 +46,7 @@ namespace Akismet.Umbraco
         /// <param name="comment">Comment object to be checked</param>
         /// <param name="useStrict">Set to True to only send designated Ham, false to include Unspecified</param>
         /// <returns></returns>
-        public bool CheckComment(AkismetComment comment, bool useStrict = false)
+        public static bool CheckComment(AkismetComment comment, bool useStrict = false)
         {
             string key, blogUrl;
             var config = GetConfig();
@@ -55,22 +60,21 @@ namespace Akismet.Umbraco
 
             if (result.ProTip != "discard")
             {
-                using (var scope = scopeProvider.CreateScope())
-                {
-                    var sql = scope.Database.Insert(new AkismetSubmission
-                    {
-                        CommentData = JsonConvert.SerializeObject(comment),
-                        CommentDate = DateTime.UtcNow,
-                        CommentText = comment.CommentContent,
-                        CommentType = comment.CommentType.ToString(),
-                        Result = JsonConvert.SerializeObject(result),
-                        SpamStatus = (int)result.SpamStatus,
-                        UserIp = comment.UserIp,
-                        UserName = comment.CommentAuthor
-                    });
+                var umbHelper = new UmbracoHelper(UmbracoContext.Current);
+                var appContext = ApplicationContext.Current;
+                var dbContext = appContext.DatabaseContext.Database;
 
-                    scope.Complete();
-                }
+                dbContext.Insert(new AkismetSubmission
+                {
+                    CommentData = JsonConvert.SerializeObject(comment),
+                    CommentDate = DateTime.UtcNow,
+                    CommentText = comment.CommentContent,
+                    CommentType = comment.CommentType,
+                    Result = JsonConvert.SerializeObject(result),
+                    SpamStatus = (int)result.SpamStatus,
+                    UserIp = comment.UserIp,
+                    UserName = comment.CommentAuthor
+                });
             }
 
             if (useStrict)
