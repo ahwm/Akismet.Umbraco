@@ -28,13 +28,6 @@ using Akismet.Umbraco;
 
 public class ContactFormController : SurfaceController
 {
-    private readonly AkismetService AkismetService;
-    
-    public ContactFormController(AkismetService akismetService)
-    {
-        AkismetService = akismetService;
-    }
-
     [HttpPost]
     [ValidateAntiForgeryToken]
     public ActionResult SubmitForm(ContactModel model)
