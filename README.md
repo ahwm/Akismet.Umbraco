@@ -8,18 +8,10 @@ Adds Akismet dashboard to Umbraco backoffice.
 ### Install via NuGet:
 
 ```
-Install-Package Akismet.Umbraco8
+Install-Package Akismet.UmbracoForms8.Workflow
 ```
 
-[![NuGet Status](https://buildstats.info/nuget/Akismet.Umbraco8?includePreReleases=true)](https://www.nuget.org/packages/Akismet.Umbraco8/)
-
-### Install via Umbraco Package
-
-* Download package from https://github.com/ahwm/Akismet.Umbraco/releases/latest
-* Or download from https://our.umbraco.com/packages/backoffice-extensions/akismet-dashboard/
-* Or install from the backoffice (search for akismet)
-
-Browse to Packages > Install Local in the Umbraco Backoffice
+[![NuGet Status](https://buildstats.info/nuget/Akismet.UmbracoForms8.Workflow)](https://www.nuget.org/packages/Akismet.UmbracoForms8.Workflow/)
 
 ### Post-Installation
 
