@@ -12,5 +12,5 @@ artifacts:
 deploy:
 - provider: NuGet
   api_key:
-    secure: WkVJb3oiApwevIMc38fgngZXhkOS3qktXf4sSwZ3YRHVtEE/cugn368uZUose63E
+    secure: nVErxJrUI4AStPan9b32g0YBTGMkjtMrehnItai8OYFy8EQNhDFWZNk5VReqC/pB
   artifact: /Akismet.UmbracoForms8.Workflow\.(.*)\.nupkg/
