@@ -4,6 +4,7 @@ using System;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Cms.Core.Migrations;
 using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Core.Sections;
 using Umbraco.Cms.Core.Services;
@@ -29,15 +30,15 @@ namespace Akismet.Umbraco
     public class AkismetComponent : IComponent
     {
         private readonly IScopeProvider _scopeProvider;
-        private readonly IMigrationBuilder _migrationBuilder;
+        private readonly IMigrationPlanExecutor _migrationPlanExecutor;
         private readonly IKeyValueService _keyValueService;
         private readonly ILoggerFactory _loggerFactory;
         private readonly IRuntimeState _runtimeState;
 
-        public AkismetComponent(IScopeProvider scopeProvider, IMigrationBuilder migrationBuilder, IKeyValueService keyValueService, ILoggerFactory loggerFactory, IRuntimeState runtimeState)
+        public AkismetComponent(IMigrationPlanExecutor migrationPlanExecutor, IScopeProvider scopeProvider, IKeyValueService keyValueService, ILoggerFactory loggerFactory, IRuntimeState runtimeState)
         {
+            _migrationPlanExecutor = migrationPlanExecutor;
             _scopeProvider = scopeProvider;
-            _migrationBuilder = migrationBuilder;
             _keyValueService = keyValueService;
             _loggerFactory = loggerFactory;
             _runtimeState = runtimeState;
@@ -62,7 +63,7 @@ namespace Akismet.Umbraco
             // Go and upgrade our site (Will check if it needs to do the work or not)
             // Based on the current/latest step
             var upgrader = new Upgrader(migrationPlan);
-            upgrader.Execute(_scopeProvider, _migrationBuilder, _keyValueService, _loggerFactory.CreateLogger<Upgrader>(), _loggerFactory);
+            upgrader.Execute(_migrationPlanExecutor, _scopeProvider, _keyValueService);
         }
 
         public void Terminate()
@@ -76,7 +77,7 @@ namespace Akismet.Umbraco
         public AddAkismetCommentsTable(IMigrationContext context) : base(context)
         { }
 
-        public override void Migrate()
+        protected override void Migrate()
         {
             Logger.LogDebug("Running migration {MigrationStep}", "AddAkismetCommentsTable");
 
@@ -123,7 +124,7 @@ namespace Akismet.Umbraco
     {
         public AddExtraColumns(IMigrationContext context) : base(context) { }
 
-        public override void Migrate()
+        protected override void Migrate()
         {
             Logger.LogDebug("Running migration {MigrationStep}", "AddExtraColumns");
 
