@@ -1,0 +1,20 @@
+version: 1.0.{build}
+image: Visual Studio 2019
+configuration: Release
+before_build:
+- cmd: >-
+    nuget restore src\Akismet.Umbraco8.sln
+
+    nuget pack NuGet\Akismet.Umbraco8.nuspec
+build:
+  verbosity: minimal
+artifacts:
+- path: src\Akismet.Umbraco8\bin\Release\Akismet.Umbraco8.Core.*.nupkg
+  name: NuGet
+- path: Akismet.Umbraco8.*.nupkg
+  name: NuGet
+deploy:
+- provider: NuGet
+  api_key:
+    secure: nVErxJrUI4AStPan9b32g0YBTGMkjtMrehnItai8OYFy8EQNhDFWZNk5VReqC/pB
+  artifact: /Akismet.Umbraco8\.(.*)\.nupkg/
