@@ -10,15 +10,15 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/ahwm/Akismet.Umbraco</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ahwm/Akismet.Umbraco</RepositoryUrl>
-    <PackageReleaseNotes>Separated source from backoffice plugin; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues</PackageReleaseNotes>
+    <PackageReleaseNotes>Stats update; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues</PackageReleaseNotes>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0</Version>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="UmbracoCms.Web" Version="[8.0,8.999999]" />
-    <PackageReference Include="AkismetApi.Net" Version="[1.1.1]" />
+    <PackageReference Include="AkismetApi.Net" Version="1.1.3" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
