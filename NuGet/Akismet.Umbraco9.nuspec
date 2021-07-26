@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
-    <metadata>
+    <metadata minClientVersion="2.5">
         <!-- Required elements-->
         <id>Akismet.Umbraco9</id>
-        <version>1.0.0-beta4.1</version>
+        <version>1.0.0-beta6.5</version>
         <description>Akismet for Umbraco 9</description>
         <authors>Adam Humpherys</authors>
 		<license type="expression">MIT</license>
@@ -15,5 +15,12 @@
         <dependencies>
 			<dependency id="Akismet.Umbraco9.Core" version="[1.0.0-beta3]" />
 		</dependencies>
+		
+		<contentFiles>
+			<files include="\contentFiles\any\any\App_Plugins\akismet\**" buildAction="Content" copyToOutput="true" />
+		</contentFiles>
     </metadata>
+	<files>
+		<file src="build\**" target="build" />
+	</files>
 </package>
