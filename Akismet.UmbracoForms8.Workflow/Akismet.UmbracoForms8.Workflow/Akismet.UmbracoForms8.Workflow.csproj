@@ -10,15 +10,15 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/ahwm/Akismet.Umbraco</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ahwm/Akismet.Umbraco</RepositoryUrl>
-    <PackageReleaseNotes>Dependency updates to streamline building; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues </PackageReleaseNotes>
+    <PackageReleaseNotes>Dependency updates; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues </PackageReleaseNotes>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.1</Version>
+    <Version>1.1.1</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="UmbracoForms.Core" Version="[8.0,8.999999]" />
-    <PackageReference Include="AkismetApi.Net" Version="[1.1.1]" />
+    <PackageReference Include="AkismetApi.Net" Version="1.1.1" />
     <PackageReference Include="Akismet.Umbraco8.Core" Version="1.0.0" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
