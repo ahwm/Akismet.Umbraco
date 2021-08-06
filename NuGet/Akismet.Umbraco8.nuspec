@@ -3,11 +3,11 @@
     <metadata>
         <!-- Required elements-->
         <id>Akismet.Umbraco8</id>
-        <version>1.2</version>
+        <version>1.2.1</version>
         <description>Akismet for Umbraco 8</description>
         <authors>Adam Humpherys</authors>
 		<license type="expression">MIT</license>
-		<releaseNotes>Added stats chart, adjusted stats layout; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues</releaseNotes>
+		<releaseNotes>Mathematical fix; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues</releaseNotes>
 		<repository type="git" url="https://github.com/ahwm/Akismet.Umbraco" />
 		<projectUrl>https://github.com/ahwm/Akismet.Umbraco</projectUrl>
 		<requireLicenseAcceptance>false</requireLicenseAcceptance>

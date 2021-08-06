@@ -90,10 +90,10 @@
                 var timeSaved = data.data.time_saved;
                 if (timeSaved > 5400 && timeSaved < 86400) {
                     interval = 'hours';
-                    timeSaved = timeSaved / 60;
+                    timeSaved = timeSaved / 60 / 60;
                 } else if (timeSaved >= 86400) {
                     interval = 'days';
-                    timeSaved = timeSaved / 60 / 24;
+                    timeSaved = timeSaved / 60 / 60 / 24;
                 } else {
                     timeSaved = timeSaved / 60;
                 }
