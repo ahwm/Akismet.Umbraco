@@ -13,12 +13,12 @@
     <PackageReleaseNotes>Stats update; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues</PackageReleaseNotes>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="UmbracoCms.Web" Version="[8.0,8.999999]" />
-    <PackageReference Include="AkismetApi.Net" Version="1.1.3" />
+    <PackageReference Include="AkismetApi.Net" Version="1.1.5" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

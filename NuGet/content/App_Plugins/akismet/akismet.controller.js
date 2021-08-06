@@ -81,55 +81,107 @@
             vm.loading = false;
 
             var date = new Intl.DateTimeFormat('en-US', { month: "long", year: "numeric" });
+            var number = new Intl.NumberFormat('en-us', { maximumFractionDigits: 0 });
             var stats = document.getElementById('akismet-stats');
             var history = document.getElementById('akismet-history');
             if (data.status == 200) {
+                //console.log(data.data);
+                var interval = 'minutes';
+                var timeSaved = data.data.time_saved;
+                if (timeSaved > 5400 && timeSaved < 86400) {
+                    interval = 'hours';
+                    timeSaved = timeSaved / 60;
+                } else if (timeSaved >= 86400) {
+                    interval = 'days';
+                    timeSaved = timeSaved / 60 / 24;
+                } else {
+                    timeSaved = timeSaved / 60;
+                }
                 var ul = document.createElement('ul');
                 var li = document.createElement('li');
                 li.innerHTML = '<strong>Accuracy:</strong> ' + data.data.Accuracy + ' %';
                 ul.appendChild(li);
                 li = document.createElement('li');
-                li.innerHTML = '<strong>Spam:</strong> ' + data.data.Spam;
+                li.innerHTML = '<strong>Spam:</strong> ' + number.format(data.data.Spam);
                 ul.appendChild(li);
                 li = document.createElement('li');
-                li.innerHTML = '<strong>Ham:</strong> ' + data.data.Ham;
+                li.innerHTML = '<strong>Ham:</strong> ' + number.format(data.data.Ham);
                 ul.appendChild(li);
                 li = document.createElement('li');
-                li.innerHTML = '<strong>Missed Spam:</strong> ' + data.data.MissedSpam;
+                li.innerHTML = '<strong>Missed Spam:</strong> ' + number.format(data.data.missed_spam);
                 ul.appendChild(li);
                 li = document.createElement('li');
-                li.innerHTML = '<strong>False Positives:</strong> ' + data.data.FalsePositives;
+                li.innerHTML = '<strong>False Positives:</strong> ' + number.format(data.data.false_positives);
+                ul.appendChild(li);
+                li = document.createElement('li');
+                li.innerHTML = '<strong>Time Saved:</strong> ' + number.format(timeSaved) + ' ' + interval;
                 ul.appendChild(li);
                 
                 stats.appendChild(ul);
 
-                ul = document.createElement('ul');
-                li = document.createElement('li');
+                var series = [
+                    { valueField: 'spam', name: 'Spam' },
+                    { valueField: 'ham', name: 'Ham' },
+                    { valueField: 'missedSpam', name: 'Missed Spam' },
+                    { valueField: 'falsePositives', name: 'False Positives' },
+                ], dataSource = [];
                 for (const property in data.data.Breakdown) {
-                    var monthDate = new Date(data.data.Breakdown[property].Da);
                     var prop = data.data.Breakdown[property];
-
-                    li = document.createElement('li');
-                    li.innerHTML = '<strong>' + date.format(monthDate) + '</strong>';
-
-                    var innerUl = document.createElement('ul');
-                    var innerLi = document.createElement('li');
-                    innerLi.innerHTML = '<strong>Spam:</strong> ' + prop.Spam;
-                    innerUl.appendChild(innerLi);
-                    innerLi = document.createElement('li');
-                    innerLi.innerHTML = '<strong>Ham:</strong> ' + prop.Ham;
-                    innerUl.appendChild(innerLi);
-                    innerLi = document.createElement('li');
-                    innerLi.innerHTML = '<strong>Missed Spam:</strong> ' + prop.MissedSpam;
-                    innerUl.appendChild(innerLi);
-                    innerLi = document.createElement('li');
-                    innerLi.innerHTML = '<strong>False Positives:</strong> ' + prop.FalsePositives;
-                    innerUl.appendChild(innerLi);
-                    li.appendChild(innerUl);
-                    ul.prepend(li);
+                    var monthDate = new Date(prop.Da);
+                    dataSource.push({ month: date.format(monthDate), spam: prop.Spam, ham: prop.Ham, missedSpam: prop.missed_spam, falsePositives: prop.false_positives });
                 }
 
-                history.appendChild(ul);
+                $("#akismet-history").dxChart({
+                    dataSource: dataSource,
+                    palette: 'Ocean',
+                    commonSeriesSettings: {
+                        argumentField: 'month',
+                        type: 'bar',
+                        hoverMode: 'allArgumentPoints',
+                        selectionMode: 'allArgumentPoints',
+                        label: {
+                            visible: true,
+                            format: {
+                                type: 'fixedPoint',
+                                precision: 0
+                            }
+                        }
+                    },
+                    series: series,
+                    legend: {
+                        verticalAlignment: 'bottom',
+                        horizontalAlignment: 'center'
+                    }
+                });
+                //console.log(series);
+
+                //ul = document.createElement('ul');
+                //li = document.createElement('li');
+                //for (const property in data.data.Breakdown) {
+                //    var monthDate = new Date(data.data.Breakdown[property].Da);
+                //    var prop = data.data.Breakdown[property];
+
+                //    li = document.createElement('li');
+                //    li.innerHTML = '<strong>' + date.format(monthDate) + '</strong>';
+
+                //    var innerUl = document.createElement('ul');
+                //    var innerLi = document.createElement('li');
+                //    innerLi.innerHTML = '<strong>Spam:</strong> ' + prop.Spam;
+                //    innerUl.appendChild(innerLi);
+                //    innerLi = document.createElement('li');
+                //    innerLi.innerHTML = '<strong>Ham:</strong> ' + prop.Ham;
+                //    innerUl.appendChild(innerLi);
+                //    innerLi = document.createElement('li');
+                //    innerLi.innerHTML = '<strong>Missed Spam:</strong> ' + prop.missed_spam;
+                //    innerUl.appendChild(innerLi);
+                //    innerLi = document.createElement('li');
+                //    innerLi.innerHTML = '<strong>False Positives:</strong> ' + prop.false_positives;
+                //    innerUl.appendChild(innerLi);
+                //    li.appendChild(innerUl);
+                //    ul.prepend(li);
+                //}
+
+                //history.appendChild(ul);
 
             } else {
                 document.getElementById('akismet-stats').classList.add("alert", "alert-error");

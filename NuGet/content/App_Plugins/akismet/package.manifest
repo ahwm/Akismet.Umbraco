@@ -1,7 +1,12 @@
 ﻿{
-    "javascript": [
-        "~/App_Plugins/akismet/akismet.controller.js"
-    ],
-    "css": [
-    ]
+  "javascript": [
+    "~/App_Plugins/akismet/akismet.controller.js",
+    "//cdnjs.cloudflare.com/ajax/libs/devextreme/21.1.5/js/dx.all.js",
+    "//cdnjs.cloudflare.com/ajax/libs/devextreme-aspnet-data/2.8.6/dx.aspnet.data.min.js"
+  ],
+  "css": [
+    "~/App_Plugins/akismet/akismet.css",
+    "//cdnjs.cloudflare.com/ajax/libs/devextreme/21.1.5/css/dx.common.min.css",
+    "//cdnjs.cloudflare.com/ajax/libs/devextreme/21.1.5/css/dx.light.min.css"
+  ]
 }

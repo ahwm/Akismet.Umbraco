@@ -198,7 +198,14 @@ namespace Akismet.Umbraco.Controllers
                 return null;
 
             AkismetClient client = new AkismetClient(key, new Uri(blogUrl), "Umbraco CMS");
+            var respAll = client.GetStatistics("all");
             var resp = client.GetStatistics();
+            resp.Spam = respAll.Spam;
+            resp.Ham = respAll.Ham;
+            resp.MissedSpam = respAll.MissedSpam;
+            resp.FalsePositives = respAll.FalsePositives;
+            resp.TimeSaved = respAll.TimeSaved;
+            resp.Accuracy = respAll.Accuracy;
 
             return resp;
         }
