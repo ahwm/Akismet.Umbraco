@@ -1,20 +1,31 @@
-version: 1.0.{build}
+version: 1.2.1.{build}
 image: Visual Studio 2019
 configuration: Release
 before_build:
-- cmd: >-
-    nuget restore src\Akismet.Umbraco8.sln
+- ps: >-
+    $version = '1.2.1'
 
-    nuget pack NuGet\Akismet.Umbraco8.nuspec
+    (Get-Content -path src\Akismet.Umbraco8\Akismet.Umbraco8.csproj -Raw) -replace '<Version>(.*)</Version>',"<Version>$version</Version>"| Set-Content -Path src\Akismet.Umbraco8\Akismet.Umbraco8.csproj
+
+    nuget pack NuGet\Akismet.Umbraco8.nuspec -Version $version -p "commitid=$env:APPVEYOR_REPO_COMMIT;coreVersion=$version;releaseNotes=$env:APPVEYOR_REPO_COMMIT_MESSAGE$env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED"
+
+    (Get-Content -path src\Akismet.Umbraco8\Akismet.Umbraco8.csproj -Raw) -replace '%releaseNotes%',"$env:APPVEYOR_REPO_COMMIT_MESSAGE$env:APPVEYOR_REPO_COMMIT_MESSAGE_EXTENDED"| Set-Content -Path src\Akismet.Umbraco8\Akismet.Umbraco8.csproj
+
+    nuget restore src\Akismet.Umbraco8.sln
 build:
   verbosity: minimal
 artifacts:
-- path: src\Akismet.Umbraco8\bin\Release\Akismet.Umbraco8.Core.*.nupkg
+- path: '**\*.nupkg'
   name: NuGet
-- path: Akismet.Umbraco8.*.nupkg
-  name: NuGet
-deploy:
-- provider: NuGet
-  api_key:
-    secure: nVErxJrUI4AStPan9b32g0YBTGMkjtMrehnItai8OYFy8EQNhDFWZNk5VReqC/pB
-  artifact: /Akismet.Umbraco8\.(.*)\.nupkg/
+for:
+
+-
+ branches:
+   only:
+     - master
+
+ deploy:
+ - provider: NuGet
+   api_key:
+     secure: nVErxJrUI4AStPan9b32g0YBTGMkjtMrehnItai8OYFy8EQNhDFWZNk5VReqC/pB
+   artifact: /Akismet.Umbraco8\.(.*)\.nupkg/
