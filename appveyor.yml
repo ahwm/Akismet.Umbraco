@@ -27,5 +27,5 @@ for:
  deploy:
  - provider: NuGet
    api_key:
-     secure: nVErxJrUI4AStPan9b32g0YBTGMkjtMrehnItai8OYFy8EQNhDFWZNk5VReqC/pB
+     secure: nqEtiFeObp2SebFXE3i0DHiBPkg3qVON4UadOTsfhpof/W6xZgEMGFDBG/brjwO0
    artifact: /Akismet.Umbraco8\.(.*)\.nupkg/
