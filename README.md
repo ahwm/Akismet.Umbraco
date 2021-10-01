@@ -1,8 +1,6 @@
 # Akismet Management for Umbraco 9
 Adds Akismet dashboard to Umbraco backoffice.
 
-![image](https://user-images.githubusercontent.com/20478373/112371956-ce623580-8ca4-11eb-9c7f-a87e58e42e97.png)
-
 *Note: This package for Umbraco 9 **only**. Check [here](https://github.com/ahwm/Akismet.Umbraco/tree/main) for Umbraco 8*
 
 ## Installation
