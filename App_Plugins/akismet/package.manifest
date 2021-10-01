@@ -1,0 +1,11 @@
+﻿{
+  "javascript": [
+    "~/App_Plugins/akismet/js/akismet.controller.js",
+    "~/App_Plugins/akismet/js/dx.all.js",
+    "~/App_Plugins/akismet/js/dx.aspnet.data.min.js"
+  ],
+  "css": [
+    "~/App_Plugins/akismet/css/akismet.css",
+    "~/App_Plugins/akismet/css/dx.light.min.css"
+  ]
+}

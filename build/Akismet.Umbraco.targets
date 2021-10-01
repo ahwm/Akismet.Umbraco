@@ -1,0 +1,27 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <PropertyGroup>
+        <akismetContentFilesPath>$(MSBuildThisFileDirectory)..\App_Plugins\akismet\**\*.*</akismetContentFilesPath>
+    </PropertyGroup>
+
+    <Target Name="CopyakismetAssets" BeforeTargets="Build">
+        <ItemGroup>
+            <akismetContentFiles Include="$(akismetContentFilesPath)" />
+        </ItemGroup>
+        <Message Text="Copying akismet files: $(akismetContentFilesPath) - #@(akismetContentFiles->Count()) files"  Importance="high" />
+        <Copy
+            SourceFiles="@(akismetContentFiles)"
+            DestinationFiles="@(akismetContentFiles->'$(MSBuildProjectDirectory)\App_Plugins\akismet\%(RecursiveDir)%(Filename)%(Extension)')"
+            SkipUnchangedFiles="true" />
+
+    </Target>
+
+    <Target Name="ClearakismetAssets" BeforeTargets="Clean">
+        <ItemGroup>
+            <akismetDir Include="$(MSBuildProjectDirectory)\App_Plugins\akismet\" />
+        </ItemGroup>
+        <Message Text="Clear old akismet data"  Importance="high" />
+        <RemoveDir Directories="@(akismetDir)"  />
+    </Target>
+
+</Project>
