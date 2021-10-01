@@ -10,10 +10,10 @@ Adds Akismet dashboard to Umbraco backoffice.
 ### Install via NuGet:
 
 ```
-Install-Package Akismet.Umbraco9
+Install-Package Akismet.Umbraco
 ```
 
-[![NuGet Status](https://buildstats.info/nuget/Akismet.Umbraco9?includePreReleases=true)](https://www.nuget.org/packages/Akismet.Umbraco9/)
+[![NuGet Status](https://buildstats.info/nuget/Akismet.Umbraco?includePreReleases=true)](https://www.nuget.org/packages/Akismet.Umbraco/)
 
 *Note: installing packages via the backoffice [will not be available beginning with Umbraco 9](https://umbraco.com/blog/packages-in-umbraco-9-via-nuget/)*
 
@@ -21,7 +21,7 @@ Install-Package Akismet.Umbraco9
 
 After package installation, log into the backoffice and navigate to Users, Groups, Administrators and be sure to add Akismet.
 
-![image](https://user-images.githubusercontent.com/20478373/112378469-9828b400-8cac-11eb-8a9e-8d35155aab0e.png)
+![image](https://user-images.githubusercontent.com/20478373/128535412-0b87914f-a848-4365-a631-ff8ffd92d448.png)
 
 ## Usage
 Once installed, the `AkismetService` service becomes available for checking comments. It is up to the developer to wire up to the contact forms but here is an abbreviated example:
