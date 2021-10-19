@@ -1,6 +1,8 @@
 # Akismet Management for Umbraco 9
 Adds Akismet dashboard to Umbraco backoffice.
 
+![image](https://user-images.githubusercontent.com/20478373/128535412-0b87914f-a848-4365-a631-ff8ffd92d448.png)
+
 *Note: This package for Umbraco 9 **only**. Check [here](https://github.com/ahwm/Akismet.Umbraco/tree/main) for Umbraco 8*
 
 ## Installation
@@ -19,7 +21,7 @@ Install-Package Akismet.Umbraco
 
 After package installation, log into the backoffice and navigate to Users, Groups, Administrators and be sure to add Akismet.
 
-![image](https://user-images.githubusercontent.com/20478373/128535412-0b87914f-a848-4365-a631-ff8ffd92d448.png)
+![image](https://user-images.githubusercontent.com/20478373/112378469-9828b400-8cac-11eb-8a9e-8d35155aab0e.png)
 
 ## Usage
 Once installed, the `AkismetService` service becomes available for checking comments. It is up to the developer to wire up to the contact forms but here is an abbreviated example:
