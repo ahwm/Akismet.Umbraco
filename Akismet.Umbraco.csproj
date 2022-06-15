@@ -6,7 +6,7 @@
         <PackageId>Akismet.Umbraco</PackageId>
 		<Authors>Adam Humpherys</Authors>
 		<Description>Akismet for Umbraco (9+)</Description>
-		<Copyright>(c) 2021 Adam Humpherys</Copyright>
+		<Copyright>(c) 2022 Adam Humpherys</Copyright>
         <Title>Akismet.Umbraco</Title>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/ahwm/Akismet.Umbraco</PackageProjectUrl>
@@ -27,6 +27,7 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
+		<None Include="README.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
 	<PropertyGroup>
