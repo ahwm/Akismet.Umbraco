@@ -10,6 +10,7 @@ using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Infrastructure.Migrations;
 using Umbraco.Cms.Infrastructure.Migrations.Upgrade;
 using Umbraco.Cms.Infrastructure.Persistence.DatabaseAnnotations;
+using Umbraco.Cms.Infrastructure.Scoping;
 
 namespace Akismet.Umbraco
 {
@@ -24,19 +25,22 @@ namespace Akismet.Umbraco
 
     public class AkismetComponent : IComponent
     {
-        private readonly IScopeProvider _scopeProvider;
+        private readonly ICoreScopeProvider _coreScopeProvider;
+        private readonly IScopeAccessor _scopeAccessor;
         private readonly IMigrationBuilder _migrationBuilder;
         private readonly IKeyValueService _keyValueService;
         private readonly ILoggerFactory _loggerFactory;
         private readonly IRuntimeState _runtimeState;
 
-        public AkismetComponent(IScopeProvider scopeProvider,
+        public AkismetComponent(ICoreScopeProvider coreScopeProvider,
             IMigrationBuilder migrationBuilder,
             IKeyValueService keyValueService,
             ILoggerFactory loggerFactory,
-            IRuntimeState runtimeState)
+            IRuntimeState runtimeState,
+            IScopeAccessor scopeAccessor)
         {
-            _scopeProvider = scopeProvider;
+            _coreScopeProvider = coreScopeProvider;
+            _scopeAccessor = scopeAccessor;
             _migrationBuilder = migrationBuilder;
             _keyValueService = keyValueService;
             _loggerFactory = loggerFactory;
@@ -61,9 +65,9 @@ namespace Akismet.Umbraco
 
             // Go and upgrade our site (Will check if it needs to do the work or not)
             // Based on the current/latest step
-            MigrationPlanExecutor executor = new MigrationPlanExecutor(_scopeProvider, _loggerFactory, _migrationBuilder);
+            MigrationPlanExecutor executor = new MigrationPlanExecutor(_coreScopeProvider, _scopeAccessor, _loggerFactory, _migrationBuilder);
             var upgrader = new Upgrader(migrationPlan);
-            upgrader.Execute(executor, _scopeProvider, _keyValueService);
+            upgrader.Execute(executor, _coreScopeProvider, _keyValueService);
         }
 
         public void Terminate()
