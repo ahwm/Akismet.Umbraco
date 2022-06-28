@@ -40,6 +40,11 @@ namespace Akismet.Umbraco
             }
         }
 
+        public Dictionary<string, string> GetConfig()
+        {
+            return new Dictionary<string, string> { { "key", key }, { "blogUrl", blogUrl } };
+        }
+
         internal void SetConfig(string key, string blogUrl)
         {
             string appData = MapPath(AppDomain.CurrentDomain, "~/App_Plugins/akismet");
