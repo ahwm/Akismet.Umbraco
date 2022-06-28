@@ -42,7 +42,7 @@ namespace Akismet.Umbraco
 
         public Dictionary<string, string> GetConfig()
         {
-            return new Dictionary<string, string> { { "key", key }, { "blogUrl", blogUrl } };
+            return new Dictionary<string, string> { { "key", apiKey }, { "blogUrl", blogUrl } };
         }
 
         internal void SetConfig(string key, string blogUrl)

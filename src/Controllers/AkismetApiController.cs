@@ -15,6 +15,11 @@ namespace Akismet.Umbraco.Controllers
             AkismetService = akismetService;
         }
 
+        public Dictionary<string, string> GetConfig()
+        {
+            return AkismetService.GetConfig();
+        }
+
         public bool VerifyStoredKey()
         {
             return AkismetService.VerifyStoredKey();
