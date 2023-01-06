@@ -1,4 +1,6 @@
 {
   "key": "",
-  "blogUrl": ""
+  "blogUrl": "",
+  "strictMode": true,
+  "clearAfter": 30
 }

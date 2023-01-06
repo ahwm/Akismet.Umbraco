@@ -198,6 +198,7 @@ angular.module("umbraco").controller("AkismetConfigController", function ($scope
     };
 
     $scope.name = "API Key";
+    vm.StrictMode = true;
 
     var init = function () {
         document.getElementById('akismetUrl').setAttribute("placeholder", 'eg - http://' + window.location.hostname + '/');
@@ -211,6 +212,8 @@ angular.module("umbraco").controller("AkismetConfigController", function ($scope
             if (data.status == 200) {
                 document.getElementById('akismetKey').value = data.data.key;
                 document.getElementById('akismetUrl').value = data.data.blogUrl;
+                document.getElementById('clearAfter').value = data.data.clearAfter;
+                vm.StrictMode = data.data.strictMode;
             } else {
                 notificationsService.error("Configuration could not be loaded");
             }
@@ -225,6 +228,7 @@ angular.module("umbraco").controller("AkismetConfigController", function ($scope
         vm.buttonState = "busy";
         var key = document.getElementById('akismetKey').value;
         var blogUrl = document.getElementById('akismetUrl').value;
+        var clearAfter = document.getElementById('clearAfter').value;
         var valid = true;
 
         if (key.trim().length != 12) {
@@ -242,7 +246,7 @@ angular.module("umbraco").controller("AkismetConfigController", function ($scope
         if (valid) {
             $http({
                 method: 'POST',
-                url: '/Umbraco/backoffice/Api/AkismetApi/VerifyKey?key=' + key + '&blogUrl=' + blogUrl,
+                url: '/Umbraco/backoffice/Api/AkismetApi/VerifyKey?key=' + key + '&blogUrl=' + blogUrl + '&clearAfter=' + clearAfter + '&strictMode=' + vm.StrictMode,
                 cache: false
             }).then(function (data) {
                 // data: data, status, headers, config
@@ -372,6 +376,16 @@ angular.module("umbraco").controller("AkismetCommentsController", function ($sco
                         "result": d.Result
                     })
                 }
+            });
+            $http({
+                method: 'GET',
+                url: '/Umbraco/backoffice/Api/AkismetApi/GetCommentPageCount',
+                cache: false
+            }).then(function (data) {
+                var pages = data.data;
+                if (pages == 0)
+                    pages = 1;
+                vm.pagination.totalPages = pages;
             });
         }
     }
@@ -574,6 +588,16 @@ angular.module("umbraco").controller("AkismetSpamQueueController", function ($sc
                         "result": d.Result
                     })
                 }
+            });
+            $http({
+                method: 'GET',
+                url: '/Umbraco/backoffice/Api/AkismetApi/GetSpamCommentPageCount',
+                cache: false
+            }).then(function (data) {
+                var pages = data.data;
+                if (pages == 0)
+                    pages = 1;
+                vm.pagination.totalPages = pages;
             });
         }
     }
