@@ -7,16 +7,16 @@
 		<Authors>Adam Humpherys</Authors>
 		<Description>Akismet for Umbraco (9+)</Description>
 		<Copyright>(c) 2022 Adam Humpherys</Copyright>
-        <Title>Akismet.Umbraco</Title>
+        <Title>Akismet Dashboard for Umbraco</Title>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageProjectUrl>https://github.com/ahwm/Akismet.Umbraco</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/ahwm/Akismet.Umbraco</RepositoryUrl>
-		<PackageReleaseNotes>Stable release for Umbraco 11; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues</PackageReleaseNotes>
+		<PackageReleaseNotes>Adding to Umbraco Marketplace; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues</PackageReleaseNotes>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageTags>umbraco plugin akismet spam antispam</PackageTags>
+        <PackageTags>umbraco plugin akismet spam antispam umbraco-marketplace</PackageTags>
         <RootNamespace>Akismet.Umbraco</RootNamespace>
-        <Version>3.0.0.0</Version>
+        <Version>3.0.1</Version>
         <AssemblyVersion>3.0.0.0</AssemblyVersion>
     </PropertyGroup>
 
