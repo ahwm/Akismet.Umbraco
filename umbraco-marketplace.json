@@ -1,0 +1,33 @@
+{
+  "AuthorDetails": {
+    "Name": "Adam Humpherys",
+    "Url": "https://adamh.us"
+  },
+  "Category": "Editor Tools",
+  "LicenseType": "Free",
+  "PackageType": "Package",
+  "Title": "Akismet Dashboard for Umbraco",
+  "RelatedPackages": [
+    {
+      "PackageId": "Akismet.UmbracoForms8.Workflow",
+      "Description": "Antispam check workflow for Umbraco Forms"
+    }
+  ],
+  "Screenshots": [
+    {
+      "ImageUrl": "https://user-images.githubusercontent.com/20478373/128535412-0b87914f-a848-4365-a631-ff8ffd92d448.png",
+      "Caption": "Backoffice dashboard example"
+    }
+  ],
+  "Tags": [
+    "akismet",
+    "antispam",
+    "spam"
+  ],
+  "VersionSpecificPackageIds": [
+    {
+      "UmbracoMajorVersion": 8,
+      "PackageId": "Akismet.Umbraco8"
+    }
+  ]
+}
