@@ -198,6 +198,7 @@ angular.module("umbraco").controller("AkismetConfigController", function ($scope
     };
 
     $scope.name = "API Key";
+    vm.StrictMode = true;
 
     var init = function () {
         document.getElementById('akismetUrl').setAttribute("placeholder", 'eg - http://' + window.location.hostname + '/');
@@ -221,10 +222,16 @@ angular.module("umbraco").controller("AkismetConfigController", function ($scope
         init();
     });
 
+    vm.toggleStrictMode = function () {
+        vm.StrictMode = !vm.StrictMode;
+    }
+
     vm.Save = function () {
         vm.buttonState = "busy";
         var key = document.getElementById('akismetKey').value;
         var blogUrl = document.getElementById('akismetUrl').value;
+        var clearAfter = document.getElementById('clearAfter').value;
+        var strictMode = vm.StrictMode;
         var valid = true;
 
         if (key.trim().length != 12) {
@@ -304,6 +311,7 @@ angular.module("umbraco").controller("AkismetCommentsController", function ($sco
     };
     vm.deleteState = "";
     vm.spamState = "";
+    vm.clearAllState = "";
     var date = new Intl.DateTimeFormat('en-US', { dateStyle: "short", timeStyle: "short" });
 
     var init = function () {
@@ -351,6 +359,33 @@ angular.module("umbraco").controller("AkismetCommentsController", function ($sco
     vm.allowSelectAll = true;
     vm.deleteComments = deleteComments;
     vm.reportSpam = reportSpam;
+    vm.clearAllComments = clearAllComments;
+
+    function clearAllComments() {
+        var confirm = {
+            title: "Clear All Comments?",
+            view: "default",
+            content: "Are you sure you wish to clear all comments? This will permanently delete all comments and cannot be reversed.",
+            submitButtonLabel: "Clear All Comments",
+            closeButtonLabel: "Cancel",
+            submit: function submit() {
+                vm.clearAllState = "busy";
+                overlayService.close();
+                $http({
+                    method: 'POST',
+                    url: '/Umbraco/backoffice/Api/AkismetApi/ClearComments',
+                    cache: false
+                }).then(function (data) {
+                    changePage(1);
+                    vm.clearAllState = "success";
+                });
+            },
+            close: function close() {
+                overlayService.close();
+            }
+        };
+        overlayService.open(confirm);
+    }
 
     function changePage(pageNumber) {
         if (pageNumber != undefined) {
@@ -372,6 +407,16 @@ angular.module("umbraco").controller("AkismetCommentsController", function ($sco
                         "result": d.Result
                     })
                 }
+            });
+            $http({
+                method: 'GET',
+                url: '/Umbraco/backoffice/Api/AkismetApi/GetCommentPageCount',
+                cache: false
+            }).then(function (data) {
+                var pages = data.data;
+                if (pages == 0)
+                    pages = 1;
+                vm.pagination.totalPages = pages;
             });
         }
     }
@@ -574,6 +619,16 @@ angular.module("umbraco").controller("AkismetSpamQueueController", function ($sc
                         "result": d.Result
                     })
                 }
+            });
+            $http({
+                method: 'GET',
+                url: '/Umbraco/backoffice/Api/AkismetApi/GetSpamCommentPageCount',
+                cache: false
+            }).then(function (data) {
+                var pages = data.data;
+                if (pages == 0)
+                    pages = 1;
+                vm.pagination.totalPages = pages;
             });
         }
     }

@@ -27,6 +27,14 @@
                         <label>Site Home:</label>
                         <input type="text" id="akismetUrl" name="akismetUrl" class="form-control" />
                     </div>
+                    <div class="row">
+                        <label>Days to clear old comments:</label>
+                        <input type="text" id="clearAfter" name="clearAfter" class="form-control" value="30" />
+                    </div>
+                    <div class="row">
+                        <label for="strictMode">Strict Mode:</label>
+                        <umb-toggle checked="vm.StrictMode" on-click="vm.toggleStrictMode()"></umb-toggle>
+                    </div>
                 </div>
 
             </umb-editor-container>
