@@ -1,50 +1,50 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-    <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-        <ContentTargetFolders>.</ContentTargetFolders>
-        <Product>Akismet.Umbraco</Product>
-        <PackageId>Akismet.Umbraco</PackageId>
-		<Authors>Adam Humpherys</Authors>
-		<Description>Akismet for Umbraco (9+)</Description>
-		<Copyright>(c) 2022 Adam Humpherys</Copyright>
-        <Title>Akismet Dashboard for Umbraco</Title>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<PackageProjectUrl>https://github.com/ahwm/Akismet.Umbraco</PackageProjectUrl>
-		<RepositoryUrl>https://github.com/ahwm/Akismet.Umbraco</RepositoryUrl>
-		<PackageReleaseNotes>Adding to Umbraco Marketplace; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues</PackageReleaseNotes>
-		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-        <PackageTags>umbraco plugin akismet spam antispam umbraco-marketplace</PackageTags>
-        <RootNamespace>Akismet.Umbraco</RootNamespace>
-        <Version>3.0.1</Version>
-        <AssemblyVersion>3.0.0.0</AssemblyVersion>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ContentTargetFolders>.</ContentTargetFolders>
+    <Product>Akismet.Umbraco</Product>
+    <PackageId>Akismet.Umbraco</PackageId>
+    <Authors>Adam Humpherys</Authors>
+    <Description>Akismet for Umbraco (9+)</Description>
+    <Copyright>(c) 2023 Adam Humpherys</Copyright>
+    <Title>Akismet Dashboard for Umbraco</Title>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/ahwm/Akismet.Umbraco</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ahwm/Akismet.Umbraco</RepositoryUrl>
+    <PackageReleaseNotes>Support for Umbraco 12; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues</PackageReleaseNotes>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageTags>umbraco plugin akismet spam antispam umbraco-marketplace</PackageTags>
+    <RootNamespace>Akismet.Umbraco</RootNamespace>
+    <Version>4.0.0</Version>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Umbraco.Cms.Web.Website" Version="[11.0.0,12.0.0)" />
-        <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="[11.0.0,12.0.0)" />
-		<PackageReference Include="AkismetApi.Net" Version="3.0.0.1" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<None Include="README.md" Pack="true" PackagePath="\"/>
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Umbraco.Cms.Web.Website" Version="[12.0.0,13.0.0)" />
+    <PackageReference Include="Umbraco.Cms.Web.BackOffice" Version="[12.0.0,13.0.0)" />
+    <PackageReference Include="AkismetApi.Net" Version="3.0.0.1" />
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <None Include="README.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
 
-	<PropertyGroup>
-		<AllowedOutputExtensionsInPackageBuildOutputFolder>
-			$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb
-		</AllowedOutputExtensionsInPackageBuildOutputFolder>
-	</PropertyGroup>
+  <PropertyGroup>
+    <AllowedOutputExtensionsInPackageBuildOutputFolder>
+      $(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb
+    </AllowedOutputExtensionsInPackageBuildOutputFolder>
+  </PropertyGroup>
 
-    <ItemGroup>
-        <Content Include="App_Plugins\akismet\**\*.*">
-            <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-            <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-        </Content>
-        <None Include="build\**\*.*">
-            <Pack>True</Pack>
-            <PackagePath>buildTransitive</PackagePath>
-        </None>
-    </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_Plugins\akismet\**\*.*">
+      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
+    </Content>
+    <None Include="build\**\*.*">
+      <Pack>True</Pack>
+      <PackagePath>buildTransitive</PackagePath>
+    </None>
+  </ItemGroup>
 </Project>
