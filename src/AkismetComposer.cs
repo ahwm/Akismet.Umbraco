@@ -1,10 +1,12 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Akismet.Umbraco.Notifications.Handlers;
+using Microsoft.Extensions.Logging;
 using NPoco;
 using System;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Core.Migrations;
+using Umbraco.Cms.Core.Notifications;
 using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Core.Sections;
 using Umbraco.Cms.Core.Services;
@@ -20,6 +22,7 @@ namespace Akismet.Umbraco
         public void Compose(IUmbracoBuilder builder)
         {
             builder.Sections().InsertBefore<PackagesSection, AkismetSection>();
+            builder.AddNotificationHandler<UmbracoApplicationStartingNotification, AkismetCommentsMigration>();
             builder.AddAkismet();
         }
     }
