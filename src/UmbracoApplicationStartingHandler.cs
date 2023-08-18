@@ -33,7 +33,7 @@ namespace Akismet.Umbraco.Notifications.Handlers
         {
             if (_runtimeState.Level >= RuntimeLevel.Run)
             {
-                MigrationPlan migrationPlan = new MigrationPlan("Skybrud.Umbraco.Redirects");
+                MigrationPlan migrationPlan = new MigrationPlan("AkismetComments");
                 migrationPlan.From(string.Empty).To<AddAkismetCommentsTable>("akismetcomments-db")
                     .To<AddExtraColumns>("akismetcomments-AddExtraColumns");
                 new Upgrader(migrationPlan).Execute(_migrationPlanExecutor, _scopeProvider, _keyValueService);
