@@ -4,6 +4,7 @@ using System;
 using Umbraco.Cms.Core;
 using Umbraco.Cms.Core.Composing;
 using Umbraco.Cms.Core.DependencyInjection;
+using Umbraco.Cms.Core.Migrations;
 using Umbraco.Cms.Core.Scoping;
 using Umbraco.Cms.Core.Sections;
 using Umbraco.Cms.Core.Services;
@@ -26,25 +27,19 @@ namespace Akismet.Umbraco
     public class AkismetComponent : IComponent
     {
         private readonly ICoreScopeProvider _coreScopeProvider;
-        private readonly IScopeAccessor _scopeAccessor;
-        private readonly IMigrationBuilder _migrationBuilder;
         private readonly IKeyValueService _keyValueService;
-        private readonly ILoggerFactory _loggerFactory;
         private readonly IRuntimeState _runtimeState;
+        private readonly IMigrationPlanExecutor _migrationPlanExecutor;
 
         public AkismetComponent(ICoreScopeProvider coreScopeProvider,
-            IMigrationBuilder migrationBuilder,
             IKeyValueService keyValueService,
-            ILoggerFactory loggerFactory,
             IRuntimeState runtimeState,
-            IScopeAccessor scopeAccessor)
+            IMigrationPlanExecutor migrationPlanExecutor)
         {
             _coreScopeProvider = coreScopeProvider;
-            _scopeAccessor = scopeAccessor;
-            _migrationBuilder = migrationBuilder;
             _keyValueService = keyValueService;
-            _loggerFactory = loggerFactory;
             _runtimeState = runtimeState;
+            _migrationPlanExecutor = migrationPlanExecutor;
         }
 
         public void Initialize()
@@ -65,9 +60,8 @@ namespace Akismet.Umbraco
 
             // Go and upgrade our site (Will check if it needs to do the work or not)
             // Based on the current/latest step
-            MigrationPlanExecutor executor = new MigrationPlanExecutor(_coreScopeProvider, _scopeAccessor, _loggerFactory, _migrationBuilder);
             var upgrader = new Upgrader(migrationPlan);
-            upgrader.Execute(executor, _coreScopeProvider, _keyValueService);
+            upgrader.Execute(_migrationPlanExecutor, _coreScopeProvider, _keyValueService);
         }
 
         public void Terminate()

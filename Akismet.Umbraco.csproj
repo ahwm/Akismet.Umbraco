@@ -16,8 +16,9 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageTags>umbraco plugin akismet spam antispam umbraco-marketplace</PackageTags>
     <RootNamespace>Akismet.Umbraco</RootNamespace>
-    <Version>4.0.0</Version>
+    <Version>4.0.1</Version>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
