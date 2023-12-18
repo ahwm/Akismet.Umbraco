@@ -16,8 +16,6 @@ Install-Package Akismet.Umbraco
 
 [![NuGet Status](https://buildstats.info/nuget/Akismet.Umbraco?includePreReleases=true)](https://www.nuget.org/packages/Akismet.Umbraco/)
 
-*Note: installing packages via the backoffice [will not be available beginning with Umbraco 9](https://umbraco.com/blog/packages-in-umbraco-9-via-nuget/)*
-
 ### Post-Installation
 
 After package installation, log into the backoffice and navigate to Users, Groups, Administrators and be sure to add Akismet.
