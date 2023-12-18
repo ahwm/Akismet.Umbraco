@@ -1,12 +1,13 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ContentTargetFolders>.</ContentTargetFolders>
+    <StaticWebAssetBasePath>App_Plugins</StaticWebAssetBasePath>
     <Product>Akismet.Umbraco</Product>
     <PackageId>Akismet.Umbraco</PackageId>
     <Authors>Adam Humpherys</Authors>
     <Description>Akismet for Umbraco (9+)</Description>
-    <Copyright>(c) 2023 Adam Humpherys</Copyright>
+    <Copyright>(c) $([System.DateTime]::UtcNow.ToString(`yyyy`)) Adam Humpherys</Copyright>
     <Title>Akismet Dashboard for Umbraco</Title>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/ahwm/Akismet.Umbraco</PackageProjectUrl>
@@ -16,7 +17,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageTags>umbraco plugin akismet spam antispam umbraco-marketplace</PackageTags>
     <RootNamespace>Akismet.Umbraco</RootNamespace>
-    <Version>4.0.3</Version>
+    <Version>4.1.0</Version>
     <AssemblyVersion>4.0.0.0</AssemblyVersion>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
@@ -29,7 +30,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <None Include="README.md" Pack="true" PackagePath="\"/>
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -38,14 +39,4 @@
     </AllowedOutputExtensionsInPackageBuildOutputFolder>
   </PropertyGroup>
 
-  <ItemGroup>
-    <Content Include="App_Plugins\akismet\**\*.*">
-      <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-      <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-    </Content>
-    <None Include="build\**\*.*">
-      <Pack>True</Pack>
-      <PackagePath>buildTransitive</PackagePath>
-    </None>
-  </ItemGroup>
 </Project>

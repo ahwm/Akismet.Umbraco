@@ -1,0 +1,9 @@
+﻿#akismet-history {
+    height: 440px;
+    margin-right: 50px;
+}
+#akismet-stats li, #akismet-account li {
+    display: inline-block;
+    list-style: none;
+    margin-right: 40px;
+}

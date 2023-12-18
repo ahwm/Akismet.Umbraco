@@ -1,0 +1,58 @@
+﻿
+<div ng-controller="AkismetSpamQueueController as vm">
+
+    <!--<form name="mySectionForm" novalidate>-->
+
+        <umb-editor-view footer="true">
+            <umb-editor-header
+                name="vm.page.name"
+                hide-alias="true"
+                hide-description="true"
+                name-locked="true"
+                hide-icon="true">
+            </umb-editor-header>
+
+            <umb-editor-container>
+                
+                <div class="container-fluid">
+                    <div class="row">
+                        <umb-table
+                            items="vm.items"
+                            item-properties="vm.options.includeProperties"
+                            allow-select-all="vm.allowSelectAll"
+                            on-select="vm.selectItem(item, $index, $event)"
+                            on-click="vm.clickItem(item)"
+                            on-select-all="vm.selectAll()"
+                            on-selected-all="vm.isSelectedAll()"
+                            on-sorting-direction="vm.isSortDirection(col, direction)"
+                            on-sort="vm.sort(field, allow, isSystem)">
+                        </umb-table>
+                        <umb-empty-state ng-if="!vm.items || vm.items.length == 0" position="center">
+                            <div>No comments currently in the queue</div>
+                        </umb-empty-state>
+                    </div>
+                    <div class="row">
+                        <umb-pagination
+                            page-number="vm.pagination.pageNumber"
+                            total-pages="vm.pagination.totalPages"
+                            on-next="vm.changePage(pageNumber)"
+                            on-prev="vm.changePage(pageNumber)"
+                            on-change="vm.changePage(pageNumber)"
+                            on-go-to-page="vm.changePage(pageNumber)">
+                        </umb-pagination>
+                    </div>
+                </div>
+            </umb-editor-container>
+
+            <umb-editor-footer>
+                <umb-editor-footer-content-right id="bulkActions" style="display:none;">
+                    <umb-button type="button" button-style="success" action="vm.deleteComments()" label="Delete" disabled="vm.deleteState === 'busy'" state="vm.deleteState"></umb-button>
+                    <umb-button type="button" button-style="info" action="vm.reportHam()" label="Report False Positive" disabled="vm.hamState === 'busy'" state="vm.hamState"></umb-button>
+                    <!--<umb-button action="vm.Save()" type="button" button-style="info" state="vm.buttonState" shortcut="ctrl+s" label="Save" disabled="vm.buttonState === 'busy'"></umb-button>-->
+                    <!--<umb-button type="button" label="Return to list" button-style="info"></umb-button>-->
+                </umb-editor-footer-content-right>
+            </umb-editor-footer>
+        </umb-editor-view>
+
+    <!--</form>-->
+</div>
