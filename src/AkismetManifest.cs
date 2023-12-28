@@ -12,7 +12,7 @@ namespace Akismet.Umbraco
             manifests.Add(new PackageManifest
             {
                 PackageName = "Akismet.Umbraco",
-                Version = assembly.GetName()?.Version?.ToString(3) ?? "4.0.0",
+                Version = assembly.GetName()?.Version?.ToString(3) ?? "5.0.0",
                 AllowPackageTelemetry = true,
                 Scripts = new string[] {
                     "/App_Plugins/akismet/js/akismet.controller.js",

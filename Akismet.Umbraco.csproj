@@ -12,12 +12,12 @@
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/ahwm/Akismet.Umbraco</PackageProjectUrl>
     <RepositoryUrl>https://github.com/ahwm/Akismet.Umbraco</RepositoryUrl>
-    <PackageReleaseNotes>Support for Umbraco 13; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues</PackageReleaseNotes>
+    <PackageReleaseNotes>Support for Umbraco 13, (breaking change) now using async calls; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues</PackageReleaseNotes>
     <PublishRepositoryUrl>true</PublishRepositoryUrl>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageTags>umbraco plugin akismet spam antispam umbraco-marketplace</PackageTags>
     <RootNamespace>Akismet.Umbraco</RootNamespace>
-    <Version>5.0.0-beta1</Version>
+    <Version>5.0.0-beta2</Version>
     <AssemblyVersion>5.0.0.0</AssemblyVersion>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>

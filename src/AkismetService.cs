@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using Umbraco.Cms.Core.DependencyInjection;
 using Umbraco.Cms.Infrastructure.Scoping;
 using Umbraco.Extensions;
@@ -58,13 +59,13 @@ namespace Akismet.Umbraco
         /// 
         /// </summary>
         /// <returns></returns>
-        public bool VerifyStoredKey()
+        public async Task<bool> VerifyStoredKeyAsync()
         {
             if (String.IsNullOrWhiteSpace(apiKey) || String.IsNullOrWhiteSpace(blogUrl))
                 return false;
 
             AkismetClient client = new AkismetClient(apiKey, new Uri(blogUrl), "Umbraco CMS");
-            return client.VerifyKey();
+            return await client.VerifyKeyAsync();
         }
 
         /// <summary>
@@ -73,7 +74,7 @@ namespace Akismet.Umbraco
         /// <param name="key"></param>
         /// <param name="blogUrl"></param>
         /// <returns></returns>
-        public bool VerifyKey(string key, string blogUrl)
+        public async Task<bool> VerifyKeyAsync(string key, string blogUrl)
         {
             if (String.IsNullOrWhiteSpace(key) || String.IsNullOrWhiteSpace(blogUrl))
                 return false;
@@ -82,7 +83,7 @@ namespace Akismet.Umbraco
                 return false;
 
             AkismetClient client = new AkismetClient(key, new Uri(blogUrl), "Umbraco CMS");
-            bool isValid = client.VerifyKey();
+            bool isValid = await client.VerifyKeyAsync();
             if (isValid)
             {
                 try
@@ -103,13 +104,13 @@ namespace Akismet.Umbraco
         /// 
         /// </summary>
         /// <returns></returns>
-        public AkismetAccount GetAccount()
+        public async Task<AkismetAccount> GetAccountAsync()
         {
             if (String.IsNullOrWhiteSpace(apiKey) || String.IsNullOrWhiteSpace(blogUrl))
                 return new AkismetAccount();
 
             AkismetClient client = new AkismetClient(apiKey, new Uri(blogUrl), "Umbraco CMS");
-            return client.GetAccountStatus();
+            return await client.GetAccountStatusAsync();
         }
 
         /// <summary>
@@ -118,13 +119,13 @@ namespace Akismet.Umbraco
         /// <param name="comment">Comment object to be checked</param>
         /// <param name="useStrict">Set to True to only send designated Ham, false to include Unspecified</param>
         /// <returns></returns>
-        public bool CheckComment(AkismetComment comment, bool useStrict = false)
+        public async Task<bool> CheckCommentAsync(AkismetComment comment, bool useStrict = false)
         {
             if (String.IsNullOrWhiteSpace(apiKey) || String.IsNullOrWhiteSpace(blogUrl))
                 return true;
 
             var client = new AkismetClient(apiKey, new Uri(blogUrl), "Umbraco CMS");
-            var result = client.Check(comment);
+            var result = await client.CheckAsync(comment);
 
             if (result.ProTip != "discard")
             {
@@ -236,7 +237,7 @@ namespace Akismet.Umbraco
         /// 
         /// </summary>
         /// <param name="id"></param>
-        public void ReportHam(string id)
+        public async Task ReportHam(string id)
         {
             List<int> ids = id.Split(',').Select(x => Convert.ToInt32(x)).ToList();
             using (var scope = scopeProvider.CreateScope(autoComplete: true))
@@ -252,7 +253,7 @@ namespace Akismet.Umbraco
                     AkismetComment c = JsonConvert.DeserializeObject<AkismetComment>(comment.CommentData);
                     c.CommentDate = comment.CommentDate.ToString("s");
                     c.CommentType = comment.CommentType;
-                    client.SubmitHam(c);
+                    await client.SubmitHamAsync(c);
                 }
 
 
@@ -266,7 +267,7 @@ namespace Akismet.Umbraco
         /// 
         /// </summary>
         /// <param name="id"></param>
-        public void ReportSpam(string id)
+        public async Task ReportSpam(string id)
         {
             List<int> ids = id.Split(',').Select(x => Convert.ToInt32(x)).ToList();
             using (var scope = scopeProvider.CreateScope(autoComplete: true))
@@ -282,7 +283,7 @@ namespace Akismet.Umbraco
                     AkismetComment c = JsonConvert.DeserializeObject<AkismetComment>(comment.CommentData);
                     c.CommentDate = comment.CommentDate.ToString("s");
                     c.CommentType = comment.CommentType;
-                    client.SubmitSpam(c);
+                    await client.SubmitSpamAsync(c);
                 }
             }
             DeleteComment(id);
@@ -292,14 +293,14 @@ namespace Akismet.Umbraco
         /// 
         /// </summary>
         /// <returns></returns>
-        public dynamic GetStats()
+        public async Task<dynamic> GetStats()
         {
             if (String.IsNullOrWhiteSpace(apiKey) || String.IsNullOrWhiteSpace(blogUrl))
                 return null;
 
             AkismetClient client = new AkismetClient(apiKey, new Uri(blogUrl), "Umbraco CMS");
-            var respAll = client.GetStatistics("all");
-            var resp = client.GetStatistics();
+            var respAll = await client.GetStatisticsAsync("all");
+            var resp = await client.GetStatisticsAsync();
             resp.Spam = respAll.Spam;
             resp.Ham = respAll.Ham;
             resp.MissedSpam = respAll.MissedSpam;
