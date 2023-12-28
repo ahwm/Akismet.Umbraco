@@ -237,7 +237,7 @@ namespace Akismet.Umbraco
         /// 
         /// </summary>
         /// <param name="id"></param>
-        public async Task ReportHam(string id)
+        public async Task ReportHamAsync(string id)
         {
             List<int> ids = id.Split(',').Select(x => Convert.ToInt32(x)).ToList();
             using (var scope = scopeProvider.CreateScope(autoComplete: true))
@@ -267,7 +267,7 @@ namespace Akismet.Umbraco
         /// 
         /// </summary>
         /// <param name="id"></param>
-        public async Task ReportSpam(string id)
+        public async Task ReportSpamAsync(string id)
         {
             List<int> ids = id.Split(',').Select(x => Convert.ToInt32(x)).ToList();
             using (var scope = scopeProvider.CreateScope(autoComplete: true))
@@ -293,7 +293,7 @@ namespace Akismet.Umbraco
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<dynamic> GetStats()
+        public async Task<dynamic> GetStatsAsync()
         {
             if (String.IsNullOrWhiteSpace(apiKey) || String.IsNullOrWhiteSpace(blogUrl))
                 return null;

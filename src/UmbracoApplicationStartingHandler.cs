@@ -14,20 +14,12 @@ using Umbraco.Cms.Infrastructure.Scoping;
 
 namespace Akismet.Umbraco.Notifications.Handlers
 {
-    public class AkismetCommentsMigration : INotificationHandler<UmbracoApplicationStartingNotification>
+    public class AkismetCommentsMigration(IScopeProvider scopeProvider, IMigrationPlanExecutor migrationPlanExecutor, IKeyValueService keyValueService, IRuntimeState runtimeState) : INotificationHandler<UmbracoApplicationStartingNotification>
     {
-        private readonly IScopeProvider _scopeProvider;
-        private readonly IMigrationPlanExecutor _migrationPlanExecutor;
-        private readonly IKeyValueService _keyValueService;
-        private readonly IRuntimeState _runtimeState;
-
-        public AkismetCommentsMigration(IScopeProvider scopeProvider, IMigrationPlanExecutor migrationPlanExecutor, IKeyValueService keyValueService, IRuntimeState runtimeState)
-        {
-            _scopeProvider = scopeProvider;
-            _migrationPlanExecutor = migrationPlanExecutor;
-            _keyValueService = keyValueService;
-            _runtimeState = runtimeState;
-        }
+        private readonly IScopeProvider _scopeProvider = scopeProvider;
+        private readonly IMigrationPlanExecutor _migrationPlanExecutor = migrationPlanExecutor;
+        private readonly IKeyValueService _keyValueService = keyValueService;
+        private readonly IRuntimeState _runtimeState = runtimeState;
 
         public void Handle(UmbracoApplicationStartingNotification notification)
         {

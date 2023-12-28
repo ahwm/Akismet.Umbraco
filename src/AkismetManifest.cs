@@ -14,16 +14,15 @@ namespace Akismet.Umbraco
                 PackageName = "Akismet.Umbraco",
                 Version = assembly.GetName()?.Version?.ToString(3) ?? "5.0.0",
                 AllowPackageTelemetry = true,
-                Scripts = new string[] {
+                Scripts = [
                     "/App_Plugins/akismet/js/akismet.controller.js",
                     "/App_Plugins/akismet/js/dx.all.js",
                     "/App_Plugins/akismet/js/dx.aspnet.data.min.js"
-                },
-                Stylesheets = new string[]
-                {
+                ],
+                Stylesheets = [
                     "/App_Plugins/akismet/css/akismet.css",
                     "/App_Plugins/akismet/css/dx.light.min.css"
-                }
+                ]
             });
         }
     }

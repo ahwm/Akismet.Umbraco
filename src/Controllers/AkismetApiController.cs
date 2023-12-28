@@ -1,78 +1,37 @@
 ﻿using Akismet.Net;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Umbraco.Cms.Web.BackOffice.Controllers;
 
 namespace Akismet.Umbraco.Controllers
 {
-    public class AkismetApiController : UmbracoAuthorizedApiController
+    // /Umbraco/backoffice/Api/AkismetApi
+    public class AkismetApiController(AkismetService akismetService) : UmbracoAuthorizedApiController
     {
-        // /Umbraco/backoffice/Api/AkismetApi
+        private readonly AkismetService AkismetService = akismetService;
 
-        private readonly AkismetService AkismetService;
+        public Dictionary<string, string> GetConfig() => AkismetService.GetConfig();
 
-        public AkismetApiController(AkismetService akismetService)
-        {
-            AkismetService = akismetService;
-        }
+        public async Task<bool> VerifyStoredKey() => await AkismetService.VerifyStoredKeyAsync();
 
-        public Dictionary<string, string> GetConfig()
-        {
-            return AkismetService.GetConfig();
-        }
+        public async Task<bool> VerifyKey(string key, string blogUrl) => await AkismetService.VerifyKeyAsync(key, blogUrl);
 
-        public bool VerifyStoredKey()
-        {
-            return AkismetService.VerifyStoredKey();
-        }
+        public int GetSpamCommentPageCount() => AkismetService.GetSpamCommentPageCount();
 
-        public bool VerifyKey(string key, string blogUrl)
-        {
-            return AkismetService.VerifyKey(key, blogUrl);
-        }
+        public IEnumerable<AkismetSubmission> GetSpamComments(int page = 1) => AkismetService.GetSpamComments(page);
 
-        public int GetSpamCommentPageCount()
-        {
-            return AkismetService.GetSpamCommentPageCount();
-        }
+        public int GetCommentPageCount() => AkismetService.GetCommentPageCount();
 
-        public IEnumerable<AkismetSubmission> GetSpamComments(int page = 1)
-        {
-            return AkismetService.GetSpamComments(page);
-        }
+        public IEnumerable<AkismetSubmission> GetComments(int page = 1) => AkismetService.GetComments(page);
 
-        public int GetCommentPageCount()
-        {
-            return AkismetService.GetCommentPageCount();
-        }
+        public async Task<AkismetAccount> GetAccount() => await AkismetService.GetAccountAsync();
 
-        public IEnumerable<AkismetSubmission> GetComments(int page = 1)
-        {
-            return AkismetService.GetComments(page);
-        }
+        public void DeleteComment(string id) => AkismetService.DeleteComment(id);
 
-        public AkismetAccount GetAccount()
-        {
-            return AkismetService.GetAccount();
-        }
+        public async Task ReportHam(string id) => await AkismetService.ReportHamAsync(id);
 
-        public void DeleteComment(string id)
-        {
-            AkismetService.DeleteComment(id);
-        }
+        public async Task ReportSpam(string id) => await AkismetService.ReportSpamAsync(id);
 
-        public void ReportHam(string id)
-        {
-            AkismetService.ReportHam(id);
-        }
-
-        public void ReportSpam(string id)
-        {
-            AkismetService.ReportSpam(id);
-        }
-
-        public dynamic GetStats()
-        {
-            return AkismetService.GetStats();
-        }
+        public async Task<dynamic> GetStats() => await AkismetService.GetStatsAsync();
     }
 }

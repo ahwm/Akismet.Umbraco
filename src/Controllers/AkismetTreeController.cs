@@ -14,19 +14,14 @@ namespace Akismet.Umbraco.Controllers
 {
     [Tree("akismet", "akismet", TreeTitle = "Akismet", SortOrder = 1)]
     [PluginController("akismet")]
-    public class AkismetTreeController : TreeController
+    public class AkismetTreeController(ILocalizedTextService localizedTextService, UmbracoApiControllerTypeCollection umbracoApiControllerTypeCollection, IMenuItemCollectionFactory menuItemCollectionFactory, IEventAggregator eventAggregator) : TreeController(localizedTextService, umbracoApiControllerTypeCollection, eventAggregator)
     {
-        private readonly IMenuItemCollectionFactory _menuItemCollectionFactory;
-
-        public AkismetTreeController(ILocalizedTextService localizedTextService,  UmbracoApiControllerTypeCollection umbracoApiControllerTypeCollection, IMenuItemCollectionFactory menuItemCollectionFactory, IEventAggregator eventAggregator) : base(localizedTextService, umbracoApiControllerTypeCollection, eventAggregator)
-        {
-            _menuItemCollectionFactory = menuItemCollectionFactory ?? throw new ArgumentNullException(nameof(menuItemCollectionFactory));
-        }
+        private readonly IMenuItemCollectionFactory _menuItemCollectionFactory = menuItemCollectionFactory ?? throw new ArgumentNullException(nameof(menuItemCollectionFactory));
 
         protected override ActionResult<TreeNode> CreateRootNode(FormCollection queryStrings)
         {
             var rootResult = base.CreateRootNode(queryStrings);
-            if (!(rootResult.Result is null))
+            if (rootResult.Result is not null)
             {
                 return rootResult;
             }

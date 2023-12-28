@@ -27,23 +27,15 @@ namespace Akismet.Umbraco
         }
     }
 
-    public class AkismetComponent : IComponent
+    public class AkismetComponent(ICoreScopeProvider coreScopeProvider,
+        IKeyValueService keyValueService,
+        IRuntimeState runtimeState,
+        IMigrationPlanExecutor migrationPlanExecutor) : IComponent
     {
-        private readonly ICoreScopeProvider _coreScopeProvider;
-        private readonly IKeyValueService _keyValueService;
-        private readonly IRuntimeState _runtimeState;
-        private readonly IMigrationPlanExecutor _migrationPlanExecutor;
-
-        public AkismetComponent(ICoreScopeProvider coreScopeProvider,
-            IKeyValueService keyValueService,
-            IRuntimeState runtimeState,
-            IMigrationPlanExecutor migrationPlanExecutor)
-        {
-            _coreScopeProvider = coreScopeProvider;
-            _keyValueService = keyValueService;
-            _runtimeState = runtimeState;
-            _migrationPlanExecutor = migrationPlanExecutor;
-        }
+        private readonly ICoreScopeProvider _coreScopeProvider = coreScopeProvider;
+        private readonly IKeyValueService _keyValueService = keyValueService;
+        private readonly IRuntimeState _runtimeState = runtimeState;
+        private readonly IMigrationPlanExecutor _migrationPlanExecutor = migrationPlanExecutor;
 
         public void Initialize()
         {
@@ -73,11 +65,8 @@ namespace Akismet.Umbraco
         }
     }
 
-    public class AddAkismetCommentsTable : MigrationBase
+    public class AddAkismetCommentsTable(IMigrationContext context) : MigrationBase(context)
     {
-        public AddAkismetCommentsTable(IMigrationContext context) : base(context)
-        { }
-
         protected override void Migrate()
         {
             Logger.LogDebug("Running migration {MigrationStep}", "AddAkismetCommentsTable");
@@ -121,10 +110,8 @@ namespace Akismet.Umbraco
         }
     }
 
-    public class AddExtraColumns : MigrationBase
+    public class AddExtraColumns(IMigrationContext context) : MigrationBase(context)
     {
-        public AddExtraColumns(IMigrationContext context) : base(context) { }
-
         protected override void Migrate()
         {
             Logger.LogDebug("Running migration {MigrationStep}", "AddExtraColumns");
