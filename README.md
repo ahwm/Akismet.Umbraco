@@ -14,7 +14,7 @@ Install-Package Akismet.Umbraco8
 ```
 
 [![NuGet Status](https://img.shields.io/nuget/vpre/Akismet.Umbraco8)](https://www.nuget.org/packages/Akismet.Umbraco8/)
-![NuGet Downloads](https://img.shields.io/nuget/dt/Akismet.Umbraco8)
+![NuGet Downloads](https://img.shields.io/nuget/dt/Akismet.Umbraco8?logo=nuget)
 
 
 ### Post-Installation
