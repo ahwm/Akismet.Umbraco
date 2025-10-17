@@ -24,4 +24,4 @@ jobs:
       - name: Build
         run: |
           cd src
-          dotnet build
+          dotnet build Akismet.Umbraco.sln
