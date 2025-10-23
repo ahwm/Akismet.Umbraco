@@ -27,10 +27,7 @@ namespace Akismet.Umbraco
         }
     }
 
-    public class AkismetComponent(ICoreScopeProvider coreScopeProvider,
-        IKeyValueService keyValueService,
-        IRuntimeState runtimeState,
-        IMigrationPlanExecutor migrationPlanExecutor) : IComponent
+    public class AkismetComponent(ICoreScopeProvider coreScopeProvider, IKeyValueService keyValueService, IRuntimeState runtimeState, IMigrationPlanExecutor migrationPlanExecutor) : IComponent
     {
         private readonly ICoreScopeProvider _coreScopeProvider = coreScopeProvider;
         private readonly IKeyValueService _keyValueService = keyValueService;

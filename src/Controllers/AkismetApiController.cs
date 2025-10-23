@@ -8,30 +8,24 @@ namespace Akismet.Umbraco.Controllers
     // /Umbraco/backoffice/Api/AkismetApi
     public class AkismetApiController(AkismetService akismetService) : UmbracoAuthorizedApiController
     {
-        private readonly AkismetService AkismetService = akismetService;
+        public async Task<bool> VerifyKey(string blogUrl) => await akismetService.VerifyKeyAsync(blogUrl);
 
-        public Dictionary<string, string> GetConfig() => AkismetService.GetConfig();
+        public int GetSpamCommentPageCount() => akismetService.GetSpamCommentPageCount();
 
-        public async Task<bool> VerifyStoredKey() => await AkismetService.VerifyStoredKeyAsync();
+        public IEnumerable<AkismetSubmission> GetSpamComments(int page = 1) => akismetService.GetSpamComments(page);
 
-        public async Task<bool> VerifyKey(string key, string blogUrl) => await AkismetService.VerifyKeyAsync(key, blogUrl);
+        public int GetCommentPageCount() => akismetService.GetCommentPageCount();
 
-        public int GetSpamCommentPageCount() => AkismetService.GetSpamCommentPageCount();
+        public IEnumerable<AkismetSubmission> GetComments(int page = 1) => akismetService.GetComments(page);
 
-        public IEnumerable<AkismetSubmission> GetSpamComments(int page = 1) => AkismetService.GetSpamComments(page);
+        public async Task<AkismetAccount> GetAccount(string blogUrl) => await akismetService.GetAccountAsync(blogUrl);
 
-        public int GetCommentPageCount() => AkismetService.GetCommentPageCount();
+        public void DeleteComment(string id) => akismetService.DeleteComment(id);
 
-        public IEnumerable<AkismetSubmission> GetComments(int page = 1) => AkismetService.GetComments(page);
+        public async Task ReportHam(string id) => await akismetService.ReportHamAsync(id);
 
-        public async Task<AkismetAccount> GetAccount() => await AkismetService.GetAccountAsync();
+        public async Task ReportSpam(string id) => await akismetService.ReportSpamAsync(id);
 
-        public void DeleteComment(string id) => AkismetService.DeleteComment(id);
-
-        public async Task ReportHam(string id) => await AkismetService.ReportHamAsync(id);
-
-        public async Task ReportSpam(string id) => await AkismetService.ReportSpamAsync(id);
-
-        public async Task<dynamic> GetStats() => await AkismetService.GetStatsAsync();
+        public async Task<dynamic> GetStats(string blogUrl) => await akismetService.GetStatsAsync(blogUrl);
     }
 }

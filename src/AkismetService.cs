@@ -1,4 +1,5 @@
 ﻿using Akismet.Net;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System;
@@ -16,101 +17,52 @@ namespace Akismet.Umbraco
     {
         public static IUmbracoBuilder AddAkismet(this IUmbracoBuilder builder)
         {
-            builder.Services.AddSingleton<AkismetService>();
+            builder.Services.Configure<AkismetOptions>(builder.Config.GetSection(AkismetOptions.SectionName));
+
+            // Get configuration to register Akismet client
+            var akismetOptions = new AkismetOptions();
+            builder.Config.GetSection(AkismetOptions.SectionName).Bind(akismetOptions);
+
+            if (!string.IsNullOrEmpty(akismetOptions.ApiKey))
+            {
+                builder.Services.AddAkismet(akismetOptions.ApiKey, "Umbraco CMS");
+            }
+
+            // Register the service
+            builder.Services.AddTransient<AkismetService>();
 
             return builder;
         }
     }
 
-    public class AkismetService
+    public class AkismetService(IScopeProvider scopeProvider, AkismetClient client)
     {
-        private readonly IScopeProvider scopeProvider;
-        private string apiKey = "";
-        private string blogUrl = "";
-
-        public AkismetService(IScopeProvider provider)
-        {
-            scopeProvider = provider;
-
-            string appData = MapPath(AppDomain.CurrentDomain, "~/App_Plugins/akismet");
-            if (File.Exists(Path.Combine(appData, "akismetConfig.json")))
-            {
-                Dictionary<string, string> config = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText(Path.Combine(appData, "akismetConfig.json")));
-                apiKey = config["key"];
-                blogUrl = config["blogUrl"];
-            }
-        }
-
-        public Dictionary<string, string> GetConfig()
-        {
-            return new Dictionary<string, string> { { "key", apiKey }, { "blogUrl", blogUrl } };
-        }
-
-        internal void SetConfig(string key, string blogUrl)
-        {
-            string appData = MapPath(AppDomain.CurrentDomain, "~/App_Plugins/akismet");
-            var config = new Dictionary<string, string> { { "key", key }, { "blogUrl", blogUrl } };
-            File.WriteAllText(Path.Combine(appData, "akismetConfig.json"), JsonConvert.SerializeObject(config));
-            apiKey = key;
-            this.blogUrl = blogUrl;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
-        public async Task<bool> VerifyStoredKeyAsync()
-        {
-            if (String.IsNullOrWhiteSpace(apiKey) || String.IsNullOrWhiteSpace(blogUrl))
-                return false;
-
-            AkismetClient client = new AkismetClient(apiKey, new Uri(blogUrl), "Umbraco CMS");
-            return await client.VerifyKeyAsync();
-        }
-
         /// <summary>
         /// 
         /// </summary>
         /// <param name="key"></param>
         /// <param name="blogUrl"></param>
         /// <returns></returns>
-        public async Task<bool> VerifyKeyAsync(string key, string blogUrl)
+        public async Task<bool> VerifyKeyAsync(string blogUrl)
         {
-            if (String.IsNullOrWhiteSpace(key) || String.IsNullOrWhiteSpace(blogUrl))
+            if (String.IsNullOrWhiteSpace(blogUrl))
                 return false;
 
-            if (key.Length != 12)
-                return false;
+            bool isValid = await client.VerifyKeyAsync(blogUrl);
 
-            AkismetClient client = new AkismetClient(key, new Uri(blogUrl), "Umbraco CMS");
-            bool isValid = await client.VerifyKeyAsync();
-            if (isValid)
-            {
-                try
-                {
-                    SetConfig(key, blogUrl);
-                    return true;
-                }
-                catch
-                {
-                    return false;
-                }
-            }
-
-            return false;
+            return isValid;
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<AkismetAccount> GetAccountAsync()
+        public async Task<AkismetAccount> GetAccountAsync(string blogUrl)
         {
-            if (String.IsNullOrWhiteSpace(apiKey) || String.IsNullOrWhiteSpace(blogUrl))
+            if (String.IsNullOrWhiteSpace(blogUrl))
                 return new AkismetAccount();
 
-            AkismetClient client = new AkismetClient(apiKey, new Uri(blogUrl), "Umbraco CMS");
-            return await client.GetAccountStatusAsync();
+            return await client.GetAccountStatusAsync(blogUrl);
         }
 
         /// <summary>
@@ -121,10 +73,9 @@ namespace Akismet.Umbraco
         /// <returns></returns>
         public async Task<bool> CheckCommentAsync(AkismetComment comment, bool useStrict = false)
         {
-            if (String.IsNullOrWhiteSpace(apiKey) || String.IsNullOrWhiteSpace(blogUrl))
+            if (String.IsNullOrWhiteSpace(comment.BlogUrl))
                 return true;
 
-            var client = new AkismetClient(apiKey, new Uri(blogUrl), "Umbraco CMS");
             var result = await client.CheckAsync(comment);
 
             if (result.ProTip != "discard")
@@ -221,7 +172,7 @@ namespace Akismet.Umbraco
         /// <param name="id"></param>
         public void DeleteComment(string id)
         {
-            List<int> ids = id.Split(',').Select(x => Convert.ToInt32(x)).ToList();
+            List<int> ids = [.. id.Split(',').Select(x => Convert.ToInt32(x))];
             using (var scope = scopeProvider.CreateScope(autoComplete: true))
             {
                 var sql = scope.SqlContext.Sql()
@@ -239,7 +190,7 @@ namespace Akismet.Umbraco
         /// <param name="id"></param>
         public async Task ReportHamAsync(string id)
         {
-            List<int> ids = id.Split(',').Select(x => Convert.ToInt32(x)).ToList();
+            List<int> ids = [.. id.Split(',').Select(x => Convert.ToInt32(x))];
             using (var scope = scopeProvider.CreateScope(autoComplete: true))
             {
                 var sql = scope.SqlContext.Sql()
@@ -247,7 +198,6 @@ namespace Akismet.Umbraco
 
                 var comments = scope.Database.Query<AkismetSubmission>(sql).ToList();
 
-                AkismetClient client = new AkismetClient(apiKey, new Uri(blogUrl), "Umbraco CMS");
                 foreach (var comment in comments)
                 {
                     AkismetComment c = JsonConvert.DeserializeObject<AkismetComment>(comment.CommentData);
@@ -269,7 +219,7 @@ namespace Akismet.Umbraco
         /// <param name="id"></param>
         public async Task ReportSpamAsync(string id)
         {
-            List<int> ids = id.Split(',').Select(x => Convert.ToInt32(x)).ToList();
+            List<int> ids = [.. id.Split(',').Select(x => Convert.ToInt32(x))];
             using (var scope = scopeProvider.CreateScope(autoComplete: true))
             {
                 var sql = scope.SqlContext.Sql()
@@ -277,7 +227,6 @@ namespace Akismet.Umbraco
 
                 var comments = scope.Database.Query<AkismetSubmission>(sql).ToList();
 
-                AkismetClient client = new AkismetClient(apiKey, new Uri(blogUrl), "Umbraco CMS");
                 foreach (var comment in comments)
                 {
                     AkismetComment c = JsonConvert.DeserializeObject<AkismetComment>(comment.CommentData);
@@ -293,14 +242,13 @@ namespace Akismet.Umbraco
         /// 
         /// </summary>
         /// <returns></returns>
-        public async Task<dynamic> GetStatsAsync()
+        public async Task<dynamic> GetStatsAsync(string blogUrl)
         {
-            if (String.IsNullOrWhiteSpace(apiKey) || String.IsNullOrWhiteSpace(blogUrl))
+            if (String.IsNullOrWhiteSpace(blogUrl))
                 return null;
 
-            AkismetClient client = new AkismetClient(apiKey, new Uri(blogUrl), "Umbraco CMS");
             var respAll = await client.GetStatisticsAsync("all");
-            var resp = await client.GetStatisticsAsync();
+            var resp = await client.GetStatisticsAsync(blogUrl);
             resp.Spam = respAll.Spam;
             resp.Ham = respAll.Ham;
             resp.MissedSpam = respAll.MissedSpam;
@@ -309,14 +257,6 @@ namespace Akismet.Umbraco
             resp.Accuracy = respAll.Accuracy;
 
             return resp;
-        }
-
-        internal static string MapPath(AppDomain domain, string path)
-        {
-            if (!path.StartsWith("~/"))
-                return path;
-
-            return Path.Combine(domain.BaseDirectory, path.Replace("~/", ""));
         }
     }
 }

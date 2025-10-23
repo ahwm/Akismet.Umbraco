@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using Umbraco.Cms.Core.Dashboards;
+﻿using Umbraco.Cms.Core.Dashboards;
 
 namespace Akismet.Umbraco
 {
@@ -10,13 +6,10 @@ namespace Akismet.Umbraco
     {
         public string Alias => "akismetDashboard";
 
-        public string[] Sections => new[]
-        {
-            "akismet"
-        };
+        public string[] Sections => [ "akismet" ];
 
         public string View => "/App_Plugins/akismet/overview.html";
 
-        public IAccessRule[] AccessRules => Array.Empty<IAccessRule>();
+        public IAccessRule[] AccessRules => [];
     }
 }

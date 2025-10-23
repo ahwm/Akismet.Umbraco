@@ -1,6 +1,6 @@
 ﻿angular.module("umbraco").controller("AkismetController", function ($scope, $http, notificationsService) {
     var vm = this;
-    vm.loading = true;
+    vm.loading = false;
     vm.stats = [];
 
     angular.element(function () {
@@ -8,9 +8,10 @@
     });
 
     var init = function () {
+        vm.loading = true;
         $http({
             method: 'POST',
-            url: '/Umbraco/backoffice/Api/AkismetApi/VerifyStoredKey',
+            url: '/Umbraco/backoffice/Api/AkismetApi/VerifyKey?blogUrl=' + window.location.host,
             cache: false
         }).then(function (data) {
             // data: data, status, headers, config
@@ -25,7 +26,7 @@
 
             } else {
                 document.getElementById('akismet-status').classList.add("alert", "alert-error");
-                document.getElementById('akismet-status').innerText = "API Key not found or not valid - please go to Configuration to update";
+                document.getElementById('akismet-status').innerText = "API Key not found or not valid - please add the API key to appsettings";
             }
         });
     };
@@ -159,93 +160,6 @@
             }
         });
     };
-});
-
-angular.module("umbraco").controller("AkismetConfigController", function ($scope, $http, notificationsService) {
-    var vm = this;
-    vm.page = {
-        name: "Configuration"
-    };
-
-    $scope.name = "API Key";
-
-    var init = function () {
-        document.getElementById('akismetUrl').setAttribute("placeholder", 'eg - http://' + window.location.hostname + '/');
-
-        $http({
-            method: 'GET',
-            url: '/Umbraco/backoffice/Api/AkismetApi/GetConfig',
-            cache: false
-        }).then(function (data) {
-            // data: data, status, headers, config
-            if (data.status == 200) {
-                document.getElementById('akismetKey').value = data.data.key;
-                document.getElementById('akismetUrl').value = data.data.blogUrl;
-            } else {
-                notificationsService.error("Configuration could not be loaded");
-            }
-        });
-    };
-
-    angular.element(function () {
-        init();
-    });
-
-    vm.Save = function () {
-        vm.buttonState = "busy";
-        var key = document.getElementById('akismetKey').value;
-        var blogUrl = document.getElementById('akismetUrl').value;
-        var valid = true;
-
-        if (key.trim().length != 12) {
-            vm.buttonState = "error";
-            notificationsService.error("API key invalid");
-            valid = false;
-        }
-
-        if (blogUrl.trim().length < 1 && valid) {
-            vm.buttonState = "error";
-            valid = false;
-            notificationsService.error("URL invalid - it should be your site's home page");
-        }
-
-        if (valid) {
-            $http({
-                method: 'POST',
-                url: '/Umbraco/backoffice/Api/AkismetApi/VerifyKey?key=' + key + '&blogUrl=' + blogUrl,
-                cache: false
-            }).then(function (data) {
-                // data: data, status, headers, config
-
-                if (data.data) {
-                    vm.buttonState = "success";
-                    notificationsService.success("API key saved. Return to the overview to see more information.");
-                } else {
-                    vm.buttonState = "error";
-                    notificationsService.error("API key invalid or another error occurred while saving the configuration. Ensure the key is accurate and that App_Plugins/akismet has write permissions.");
-                }
-            });
-        }
-    };
-
-    function extractHostname(url) {
-        var hostname;
-        //find & remove protocol (http, ftp, etc.) and get hostname
-
-        if (url.indexOf("//") > -1) {
-            hostname = url.split('/')[2];
-        }
-        else {
-            hostname = url.split('/')[0];
-        }
-
-        //find & remove port number
-        hostname = hostname.split(':')[0];
-        //find & remove "?"
-        hostname = hostname.split('?')[0];
-
-        return hostname;
-    }
 });
 
 angular.module("umbraco").controller("AkismetCommentsController", function ($scope, $http, notificationsService, listViewHelper, overlayService) {

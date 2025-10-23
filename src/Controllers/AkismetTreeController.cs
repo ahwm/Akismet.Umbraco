@@ -64,9 +64,8 @@ namespace Akismet.Umbraco.Controllers
                 // create our node collection
                 var nodes = new TreeNodeCollection
                 {
-                    CreateTreeNode("1", "-1", queryStrings, "Configuration", "icon-wrench", false, "akismet/akismet/configuration"),
-                    CreateTreeNode("2", "-1", queryStrings, "Spam Queue", "icon-conversation-alt", false, "akismet/akismet/spam-queue"),
-                    CreateTreeNode("3", "-1", queryStrings, "Comments", "icon-chat-active", false, "akismet/akismet/comments"),
+                    CreateTreeNode("1", "-1", queryStrings, "Spam Queue", "icon-conversation-alt", false, "akismet/akismet/spam-queue"),
+                    CreateTreeNode("2", "-1", queryStrings, "Comments", "icon-chat-active", false, "akismet/akismet/comments"),
                 };
 
                 return nodes;
