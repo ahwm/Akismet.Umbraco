@@ -1,0 +1,14 @@
+{
+  "id": "Akismet.Umbraco",
+  "name": "Akismet.Umbraco",
+  "version": "0.0.0",
+  "allowTelemetry": true,
+  "extensions": [
+    {
+      "name": "Akismet Umbraco Bundle",
+      "alias": "Akismet.Umbraco.Bundle",
+      "type": "bundle",
+      "js": "/App_Plugins/AkismetUmbraco/akismet-umbraco.js"
+    }
+  ]
+}
