@@ -1,17 +1,17 @@
 export const manifests: Array<UmbExtensionManifest> = [
   {
-    name: "Akismet Umbraco Dashboard",
-    alias: "Akismet.Umbraco.Dashboard",
     type: "dashboard",
-    js: () => import("./dashboard.element.js"),
+    alias: "Akismet.Umbraco.Dashboard",
+    name: "Akismet Dashboard",
+    element: () => import("./dashboard.element.js"),
     meta: {
-      label: "Example Dashboard",
-      pathname: "example-dashboard",
+      label: "Akismet",
+      pathname: "akismet",
     },
     conditions: [
       {
         alias: "Umb.Condition.SectionAlias",
-        match: "Umb.Section.Content",
+        match: "Umb.Section.Settings",
       },
     ],
   },

@@ -6,24 +6,49 @@ import {
   state,
 } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
-import { UUIButtonElement } from "@umbraco-cms/backoffice/external/uui";
 import { UMB_NOTIFICATION_CONTEXT } from "@umbraco-cms/backoffice/notification";
-import { UMB_CURRENT_USER_CONTEXT, UmbCurrentUserModel } from "@umbraco-cms/backoffice/current-user";
-import { AkismetUmbracoService, UserModel } from "../api/index.js";
+import { AkismetUmbracoService } from "../api/index.js";
 
-@customElement("example-dashboard")
-export class ExampleDashboardElement extends UmbElementMixin(LitElement) {
+interface AkismetSubmission {
+  id: number;
+  commentDate: string;
+  commentType: string;
+  commentText: string;
+  commentData: string;
+  result: string;
+  spamStatus: number;
+  userIp?: string;
+  userName?: string;
+}
+
+interface SpamStats {
+  spam: number;
+  ham: number;
+  missedSpam: number;
+  falsePositives: number;
+  accuracy: number;
+  timeSaved: number;
+}
+
+@customElement("akismet-dashboard")
+export class AkismetDashboardElement extends UmbElementMixin(LitElement) {
   @state()
-  private _yourName?: string = "Press the button!";
+  private _keyValid: boolean = false;
 
   @state()
-  private _timeFromMrWolf?: Date;
+  private _stats?: SpamStats;
 
   @state()
-  private _serverUserData?: UserModel;
+  private _spamComments: AkismetSubmission[] = [];
 
   @state()
-  private _contextCurrentUser?: UmbCurrentUserModel;
+  private _loading: boolean = false;
+
+  @state()
+  private _spamCount: number = 0;
+
+  @state()
+  private _hamCount: number = 0;
 
   #notificationContext?: typeof UMB_NOTIFICATION_CONTEXT.TYPE;
 
@@ -34,153 +59,207 @@ export class ExampleDashboardElement extends UmbElementMixin(LitElement) {
       this.#notificationContext = notificationContext;
     });
 
-    this.consumeContext(UMB_CURRENT_USER_CONTEXT, (currentUserContext) => {
-      // When we have the current user context
-      // We can observe properties from it, such as the current user or perhaps just individual properties
-      // When the currentUser object changes we will get notified and can reset the @state properrty
-      this.observe(
-        currentUserContext?.currentUser,
-        (currentUser) => {
-          this._contextCurrentUser = currentUser;
-        },
-        "_contextCurrentUser"
-      );
-    });
+    this.loadData();
   }
 
-  #onClickWhoAmI = async (ev: Event) => {
-    const buttonElement = ev.target as UUIButtonElement;
-    buttonElement.state = "waiting";
+  async loadData() {
+    this._loading = true;
 
-    const { data, error } = await AkismetUmbracoService.whoAmI();
-
-    if (error) {
-      buttonElement.state = "failed";
-      console.error(error);
-      return;
+    // Verify key
+    const { data: keyValid, error: keyError } = await AkismetUmbracoService.verifyKey();
+    if (!keyError && keyValid) {
+      this._keyValid = keyValid;
     }
 
-    if (data !== undefined) {
-      this._serverUserData = data as UserModel;
-      buttonElement.state = "success";
+    // Get stats
+    const { data: stats, error: statsError } = await AkismetUmbracoService.getStats();
+    if (!statsError && stats) {
+      this._stats = stats as SpamStats;
+    }
+
+    // Get spam count
+    const { data: spamCount, error: spamCountError } = await AkismetUmbracoService.getSpamCount();
+    if (!spamCountError && spamCount !== undefined) {
+      this._spamCount = spamCount;
+    }
+
+    // Get ham count
+    const { data: hamCount, error: hamCountError } = await AkismetUmbracoService.getHamCount();
+    if (!hamCountError && hamCount !== undefined) {
+      this._hamCount = hamCount;
+    }
+
+    // Get spam comments
+    const { data: spamComments, error: spamError } = await AkismetUmbracoService.getSpamComments();
+    if (!spamError && spamComments) {
+      this._spamComments = spamComments as AkismetSubmission[];
+    }
+
+    this._loading = false;
+  }
+
+  #formatTimeSaved(seconds: number): string {
+    if (seconds < 3600) {
+      return `${Math.round(seconds / 60)} minutes`;
+    } else if (seconds < 86400) {
+      return `${Math.round(seconds / 3600)} hours`;
+    } else {
+      return `${Math.round(seconds / 86400)} days`;
+    }
+  }
+
+  #onDeleteComment = async (id: number) => {
+    const { error } = await AkismetUmbracoService.deleteComment({ path: { id: id.toString() } });
+    
+    if (error) {
+      if (this.#notificationContext) {
+        this.#notificationContext.peek("danger", {
+          data: {
+            headline: "Error",
+            message: "Failed to delete comment",
+          },
+        });
+      }
+      return;
     }
 
     if (this.#notificationContext) {
-      this.#notificationContext.peek("warning", {
+      this.#notificationContext.peek("positive", {
         data: {
-          headline: `You are ${this._serverUserData?.name}`,
-          message: `Your email is ${this._serverUserData?.email}`,
+          headline: "Success",
+          message: "Comment deleted successfully",
         },
       });
     }
+
+    // Reload data
+    this.loadData();
   };
 
-  #onClickWhatsTheTimeMrWolf = async (ev: Event) => {
-    const buttonElement = ev.target as UUIButtonElement;
-    buttonElement.state = "waiting";
-
-    // Getting a string - should I expect a datetime?!
-    const { data, error } = await AkismetUmbracoService.whatsTheTimeMrWolf();
-
+  #onReportHam = async (id: number) => {
+    const { error } = await AkismetUmbracoService.reportHam({ path: { id: id.toString() } });
+    
     if (error) {
-      buttonElement.state = "failed";
-      console.error(error);
+      if (this.#notificationContext) {
+        this.#notificationContext.peek("danger", {
+          data: {
+            headline: "Error",
+            message: "Failed to report ham",
+          },
+        });
+      }
       return;
     }
 
-    if (data !== undefined) {
-      this._timeFromMrWolf = new Date(data);
-      buttonElement.state = "success";
-    }
-  };
-
-  #onClickWhatsMyName = async (ev: Event) => {
-    const buttonElement = ev.target as UUIButtonElement;
-    buttonElement.state = "waiting";
-
-    const { data, error } = await AkismetUmbracoService.whatsMyName();
-
-    if (error) {
-      buttonElement.state = "failed";
-      console.error(error);
-      return;
+    if (this.#notificationContext) {
+      this.#notificationContext.peek("positive", {
+        data: {
+          headline: "Success",
+          message: "False positive reported to Akismet",
+        },
+      });
     }
 
-    this._yourName = data;
-    buttonElement.state = "success";
+    // Reload data
+    this.loadData();
   };
 
   render() {
+    if (this._loading) {
+      return html`
+        <uui-loader-bar></uui-loader-bar>
+      `;
+    }
+
     return html`
-      <uui-box headline="Who am I?">
-        <div slot="header">[Server]</div>
-        <h2>
-          <uui-icon name="icon-user"></uui-icon>${this._serverUserData?.email
-            ? this._serverUserData.email
-            : "Press the button!"}
-        </h2>
-        <ul>
-          ${this._serverUserData?.groups.map(
-            (group) => html`<li>${group.name}</li>`
-          )}
-        </ul>
-        <uui-button
-          color="default"
-          look="primary"
-          @click="${this.#onClickWhoAmI}"
-        >
-          Who am I?
-        </uui-button>
-        <p>
-          This endpoint gets your current user from the server and displays your
-          email and list of user groups. It also displays a Notification with
-          your details.
-        </p>
+      <uui-box headline="Akismet Status">
+        ${this._keyValid
+          ? html`
+              <div class="status-box success">
+                <uui-icon name="icon-check"></uui-icon>
+                <span>API Key Valid</span>
+              </div>
+            `
+          : html`
+              <div class="status-box error">
+                <uui-icon name="icon-alert"></uui-icon>
+                <span>API Key not found or not valid - please check Configuration</span>
+              </div>
+            `}
+
+            ${this._stats
+        ? html`
+            <uui-box headline="Statistics">
+              <div class="stats-grid">
+                <div class="stat-item">
+                  <div class="stat-value">${this._stats.spam?.toLocaleString() ?? 0}</div>
+                  <div class="stat-label">Spam Blocked</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">${this._stats.ham?.toLocaleString() ?? 0}</div>
+                  <div class="stat-label">Ham (Not Spam)</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">${this._stats.accuracy?.toFixed(1) ?? 0}%</div>
+                  <div class="stat-label">Accuracy</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-value">${this.#formatTimeSaved(this._stats.timeSaved ?? 0)}</div>
+                  <div class="stat-label">Time Saved</div>
+                </div>
+              </div>
+            </uui-box>
+          `
+        : ""}
+
+      <uui-box headline="Database Statistics">
+        <div class="stats-grid">
+          <div class="stat-item">
+            <div class="stat-value">${this._spamCount.toLocaleString()}</div>
+            <div class="stat-label">Spam in Database</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-value">${this._hamCount.toLocaleString()}</div>
+            <div class="stat-label">Ham in Database</div>
+          </div>
+        </div>
       </uui-box>
 
-      <uui-box headline="What's my Name?">
-        <div slot="header">[Server]</div>
-        <h2><uui-icon name="icon-user"></uui-icon> ${this._yourName}</h2>
-        <uui-button
-          color="default"
-          look="primary"
-          @click="${this.#onClickWhatsMyName}"
-        >
-          Whats my name?
-        </uui-button>
-        <p>
-          This endpoint has a forced delay to show the button 'waiting' state
-          for a few seconds before completing the request.
-        </p>
-      </uui-box>
-
-      <uui-box headline="What's the Time?">
-        <div slot="header">[Server]</div>
-        <h2>
-          <uui-icon name="icon-alarm-clock"></uui-icon> ${this._timeFromMrWolf
-            ? this._timeFromMrWolf.toLocaleString()
-            : "Press the button!"}
-        </h2>
-        <uui-button
-          color="default"
-          look="primary"
-          @click="${this.#onClickWhatsTheTimeMrWolf}"
-        >
-          Whats the time Mr Wolf?
-        </uui-button>
-        <p>This endpoint gets the current date and time from the server.</p>
-      </uui-box>
-
-      <uui-box headline="Who am I?" class="wide">
-        <div slot="header">[Context]</div>
-        <p>Current user email: <b>${this._contextCurrentUser?.email}</b></p>
-        <p>
-          This is the JSON object available by consuming the
-          'UMB_CURRENT_USER_CONTEXT' context:
-        </p>
-        <umb-code-block language="json" copy
-          >${JSON.stringify(this._contextCurrentUser, null, 2)}</umb-code-block
-        >
+      <uui-box headline="Recent Spam Comments">
+        ${this._spamComments.length === 0
+          ? html`<p>No spam comments found.</p>`
+          : html`
+              <div class="comments-list">
+                ${this._spamComments.slice(0, 10).map(
+                  (comment) => html`
+                    <div class="comment-item">
+                      <div class="comment-header">
+                        <strong>${comment.userName ?? "Anonymous"}</strong>
+                        <span class="comment-date">${new Date(comment.commentDate).toLocaleString()}</span>
+                      </div>
+                      <div class="comment-text">${comment.commentText}</div>
+                      <div class="comment-actions">
+                        <uui-button
+                          look="secondary"
+                          label="Report Ham"
+                          @click="${() => this.#onReportHam(comment.id)}"
+                        >
+                          Report as Not Spam
+                        </uui-button>
+                        <uui-button
+                          look="primary"
+                          color="danger"
+                          label="Delete"
+                          @click="${() => this.#onDeleteComment(comment.id)}"
+                        >
+                          Delete
+                        </uui-button>
+                      </div>
+                    </div>
+                  `
+                )}
+              </div>
+            `}
       </uui-box>
     `;
   }
@@ -188,31 +267,97 @@ export class ExampleDashboardElement extends UmbElementMixin(LitElement) {
   static styles = [
     css`
       :host {
-        display: grid;
-        gap: var(--uui-size-layout-1);
+        display: block;
         padding: var(--uui-size-layout-1);
-        grid-template-columns: 1fr 1fr 1fr;
       }
 
       uui-box {
         margin-bottom: var(--uui-size-layout-1);
       }
 
-      h2 {
-        margin-top: 0;
+      .status-box {
+        display: flex;
+        align-items: center;
+        gap: var(--uui-size-space-3);
+        padding: var(--uui-size-space-4);
+        border-radius: var(--uui-border-radius);
       }
 
-      .wide {
-        grid-column: span 3;
+      .status-box.success {
+        background-color: var(--uui-color-positive-emphasis);
+        color: var(--uui-color-positive-contrast);
+      }
+
+      .status-box.error {
+        background-color: var(--uui-color-danger-emphasis);
+        color: var(--uui-color-danger-contrast);
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: var(--uui-size-layout-1);
+      }
+
+      .stat-item {
+        padding: var(--uui-size-space-5);
+        border: 1px solid var(--uui-color-border);
+        border-radius: var(--uui-border-radius);
+        text-align: center;
+      }
+
+      .stat-value {
+        font-size: var(--uui-type-h2-size);
+        font-weight: bold;
+        color: var(--uui-color-interactive);
+        margin-bottom: var(--uui-size-space-2);
+      }
+
+      .stat-label {
+        font-size: var(--uui-type-small-size);
+        color: var(--uui-color-text-alt);
+      }
+
+      .comments-list {
+        display: flex;
+        flex-direction: column;
+        gap: var(--uui-size-space-4);
+      }
+
+      .comment-item {
+        padding: var(--uui-size-space-4);
+        border: 1px solid var(--uui-color-border);
+        border-radius: var(--uui-border-radius);
+      }
+
+      .comment-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: var(--uui-size-space-2);
+      }
+
+      .comment-date {
+        color: var(--uui-color-text-alt);
+        font-size: var(--uui-type-small-size);
+      }
+
+      .comment-text {
+        margin-bottom: var(--uui-size-space-3);
+        color: var(--uui-color-text);
+      }
+
+      .comment-actions {
+        display: flex;
+        gap: var(--uui-size-space-2);
       }
     `,
   ];
 }
 
-export default ExampleDashboardElement;
+export default AkismetDashboardElement;
 
 declare global {
   interface HTMLElementTagNameMap {
-    "example-dashboard": ExampleDashboardElement;
+    "akismet-dashboard": AkismetDashboardElement;
   }
 }

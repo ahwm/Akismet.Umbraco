@@ -1,32 +1,32 @@
-const a = [
+const t = [
   {
     name: "Akismet Umbraco Entrypoint",
     alias: "Akismet.Umbraco.Entrypoint",
     type: "backofficeEntryPoint",
     js: () => import("./entrypoint-DpTJ6HQw.js")
   }
-], t = [
+], a = [
   {
-    name: "Akismet Umbraco Dashboard",
-    alias: "Akismet.Umbraco.Dashboard",
     type: "dashboard",
-    js: () => import("./dashboard.element-CLkzx9mZ.js"),
+    alias: "Akismet.Umbraco.Dashboard",
+    name: "Akismet Dashboard",
+    element: () => import("./dashboard.element-Cwk_Yy0z.js"),
     meta: {
-      label: "Example Dashboard",
-      pathname: "example-dashboard"
+      label: "Akismet",
+      pathname: "akismet"
     },
     conditions: [
       {
         alias: "Umb.Condition.SectionAlias",
-        match: "Umb.Section.Content"
+        match: "Umb.Section.Settings"
       }
     ]
   }
-], o = [
-  ...a,
-  ...t
+], i = [
+  ...t,
+  ...a
 ];
 export {
-  o as manifests
+  i as manifests
 };
 //# sourceMappingURL=akismet-umbraco.js.map

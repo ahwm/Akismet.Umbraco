@@ -7,6 +7,26 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <Product>Akismet.Umbraco</Product>
+    <PackageId>Akismet.Umbraco</PackageId>
+    <Authors>Adam Humpherys</Authors>
+    <Description>Akismet for Umbraco (9+)</Description>
+    <Copyright>(c) $([System.DateTime]::UtcNow.ToString(`yyyy`)) Adam Humpherys</Copyright>
+    <Title>Akismet Dashboard for Umbraco</Title>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/ahwm/Akismet.Umbraco</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ahwm/Akismet.Umbraco</RepositoryUrl>
+    <PackageReleaseNotes>Support for Umbraco 17; please report issues at https://github.com/ahwm/Akismet.Umbraco/issues</PackageReleaseNotes>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageTags>umbraco plugin akismet spam antispam umbraco-marketplace</PackageTags>
+    <RootNamespace>Akismet.Umbraco</RootNamespace>
+    <Version>6.0.0-beta1</Version>
+    <AssemblyVersion>6.0.0.0</AssemblyVersion>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <PackageId>Akismet.Umbraco</PackageId>
     <Product>Akismet.Umbraco</Product>
     <Title>Akismet.Umbraco</Title>
@@ -14,10 +34,13 @@
 
 
   <ItemGroup>
-    <PackageReference Include="Umbraco.Cms.Web.Website" Version="*" />
-    <PackageReference Include="Umbraco.Cms.Web.Common" Version="*" />
-    <PackageReference Include="Umbraco.Cms.Api.Common" Version="*" />
-    <PackageReference Include="Umbraco.Cms.Api.Management" Version="*" />
+    <PackageReference Include="AkismetApi.Net" Version="4.1.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="Umbraco.Cms.Web.Website" Version="[17.0.0,17.9999.0)" />
+    <PackageReference Include="Umbraco.Cms.Web.Common" Version="[17.0.0,17.9999.0)" />
+    <PackageReference Include="Umbraco.Cms.Api.Common" Version="[17.0.0,17.9999.0)" />
+    <PackageReference Include="Umbraco.Cms.Api.Management" Version="[17.0.0,17.9999.0)" />
+    <None Include="README.md" Pack="true" PackagePath="\" />
   </ItemGroup>
 
   <ItemGroup>

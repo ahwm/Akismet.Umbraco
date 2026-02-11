@@ -2,7 +2,6 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
-import type { PingData, PingErrors, PingResponses, WhatsMyNameData, WhatsMyNameErrors, WhatsMyNameResponses, WhatsTheTimeMrWolfData, WhatsTheTimeMrWolfErrors, WhatsTheTimeMrWolfResponses, WhoAmIData, WhoAmIErrors, WhoAmIResponses } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -19,54 +18,145 @@ export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends 
 };
 
 export class AkismetUmbracoService {
-    public static ping<ThrowOnError extends boolean = false>(options?: Options<PingData, ThrowOnError>) {
-        return (options?.client ?? client).get<PingResponses, PingErrors, ThrowOnError>({
+    public static verifyKey<ThrowOnError extends boolean = false>(options?: Options<any, ThrowOnError>) {
+        return (options?.client ?? client).get<boolean, any, ThrowOnError>({
             security: [
                 {
                     scheme: 'bearer',
                     type: 'http'
                 }
             ],
-            url: '/umbraco/websiteclient/api/v1/ping',
+            url: '/umbraco/akismetumbraco/api/v1/verify-key',
             ...options
         });
     }
-    
-    public static whatsMyName<ThrowOnError extends boolean = false>(options?: Options<WhatsMyNameData, ThrowOnError>) {
-        return (options?.client ?? client).get<WhatsMyNameResponses, WhatsMyNameErrors, ThrowOnError>({
+
+    public static getStats<ThrowOnError extends boolean = false>(options?: Options<any, ThrowOnError>) {
+        return (options?.client ?? client).get<any, any, ThrowOnError>({
             security: [
                 {
                     scheme: 'bearer',
                     type: 'http'
                 }
             ],
-            url: '/umbraco/websiteclient/api/v1/whatsMyName',
+            url: '/umbraco/akismetumbraco/api/v1/stats',
             ...options
         });
     }
-    
-    public static whatsTheTimeMrWolf<ThrowOnError extends boolean = false>(options?: Options<WhatsTheTimeMrWolfData, ThrowOnError>) {
-        return (options?.client ?? client).get<WhatsTheTimeMrWolfResponses, WhatsTheTimeMrWolfErrors, ThrowOnError>({
+
+    public static getComments<ThrowOnError extends boolean = false>(options?: Options<any, ThrowOnError>) {
+        return (options?.client ?? client).get<any[], any, ThrowOnError>({
             security: [
                 {
                     scheme: 'bearer',
                     type: 'http'
                 }
             ],
-            url: '/umbraco/websiteclient/api/v1/whatsTheTimeMrWolf',
+            url: '/umbraco/akismetumbraco/api/v1/comments',
             ...options
         });
     }
-    
-    public static whoAmI<ThrowOnError extends boolean = false>(options?: Options<WhoAmIData, ThrowOnError>) {
-        return (options?.client ?? client).get<WhoAmIResponses, WhoAmIErrors, ThrowOnError>({
+
+    public static getSpamComments<ThrowOnError extends boolean = false>(options?: Options<any, ThrowOnError>) {
+        return (options?.client ?? client).get<any[], any, ThrowOnError>({
             security: [
                 {
                     scheme: 'bearer',
                     type: 'http'
                 }
             ],
-            url: '/umbraco/websiteclient/api/v1/whoAmI',
+            url: '/umbraco/akismetumbraco/api/v1/spam',
+            ...options
+        });
+    }
+
+    public static getComment<ThrowOnError extends boolean = false>(options: Options<any, ThrowOnError> & { path: { id: number } }) {
+        return (options?.client ?? client).get<any, any, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: `/umbraco/akismetumbraco/api/v1/comment/${options.path.id}`,
+            ...options
+        });
+    }
+
+    public static getSpamCount<ThrowOnError extends boolean = false>(options?: Options<any, ThrowOnError>) {
+        return (options?.client ?? client).get<number, any, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: '/umbraco/akismetumbraco/api/v1/spam-count',
+            ...options
+        });
+    }
+
+    public static getHamCount<ThrowOnError extends boolean = false>(options?: Options<any, ThrowOnError>) {
+        return (options?.client ?? client).get<number, any, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: '/umbraco/akismetumbraco/api/v1/ham-count',
+            ...options
+        });
+    }
+
+    public static deleteComment<ThrowOnError extends boolean = false>(options: Options<any, ThrowOnError> & { path: { id: string } }) {
+        return (options?.client ?? client).delete<void, any, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: `/umbraco/akismetumbraco/api/v1/comment/${options.path.id}`,
+            ...options
+        });
+    }
+
+    public static reportHam<ThrowOnError extends boolean = false>(options: Options<any, ThrowOnError> & { path: { id: string } }) {
+        return (options?.client ?? client).post<void, any, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: `/umbraco/akismetumbraco/api/v1/report-ham/${options.path.id}`,
+            ...options
+        });
+    }
+
+    public static reportSpam<ThrowOnError extends boolean = false>(options: Options<any, ThrowOnError> & { path: { id: string } }) {
+        return (options?.client ?? client).post<void, any, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: `/umbraco/akismetumbraco/api/v1/report-spam/${options.path.id}`,
+            ...options
+        });
+    }
+
+    public static checkComment<ThrowOnError extends boolean = false>(options: Options<any, ThrowOnError> & { body: any }) {
+        return (options?.client ?? client).post<any, any, ThrowOnError>({
+            security: [
+                {
+                    scheme: 'bearer',
+                    type: 'http'
+                }
+            ],
+            url: '/umbraco/akismetumbraco/api/v1/check',
             ...options
         });
     }
