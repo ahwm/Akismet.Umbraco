@@ -1,5 +1,5 @@
 import { UMB_AUTH_CONTEXT as s } from "@umbraco-cms/backoffice/auth";
-import { c as i } from "./client.gen-DHCnB5Mt.js";
+import { c as i } from "./client.gen-B5Kd-adp.js";
 const l = (n, e) => {
   console.log("Hello from my extension 🎉"), n.consumeContext(s, async (t) => {
     const o = t?.getOpenApiConfiguration();
@@ -16,4 +16,4 @@ export {
   l as onInit,
   a as onUnload
 };
-//# sourceMappingURL=entrypoint-DpTJ6HQw.js.map
+//# sourceMappingURL=entrypoint-B_MFrulr.js.map

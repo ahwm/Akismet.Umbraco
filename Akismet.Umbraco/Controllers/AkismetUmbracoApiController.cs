@@ -20,7 +20,9 @@ namespace Akismet.Umbraco.Controllers
             if (!_akismetService.IsConfigured)
                 return BadRequest("Akismet is not configured");
 
-            var result = await _akismetService.VerifyKeyAsync();
+            var uri = new UriBuilder(Request.Scheme, Request.Host.Host, Request.Host.Port ?? 443);
+
+            var result = await _akismetService.VerifyKeyAsync(uri.ToString());
             return Ok(result);
         }
 
@@ -31,7 +33,9 @@ namespace Akismet.Umbraco.Controllers
             if (!_akismetService.IsConfigured)
                 return BadRequest("Akismet is not configured");
 
-            var stats = await _akismetService.GetStatsAsync();
+            var uri = new UriBuilder(Request.Scheme, Request.Host.Host, Request.Host.Port ?? 443);
+
+            var stats = await _akismetService.GetStatsAsync(uri.ToString());
             return Ok(stats);
         }
 
@@ -76,7 +80,7 @@ namespace Akismet.Umbraco.Controllers
 
         [HttpDelete("comments")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult DeleteComment(string ids)
+        public IActionResult DeleteComments(string ids)
         {
             _akismetService.DeleteComment(ids);
             return Ok();

@@ -13,7 +13,6 @@ namespace Akismet.Umbraco.Services
         private readonly AkismetClient _akismetClient;
         private readonly IConfiguration _configuration;
         private readonly string? _apiKey;
-        private readonly string? _blogUrl;
 
         public AkismetService(IScopeProvider scopeProvider, AkismetClient akismetClient, IConfiguration configuration)
         {
@@ -21,17 +20,16 @@ namespace Akismet.Umbraco.Services
             _akismetClient = akismetClient;
             _configuration = configuration;
             _apiKey = _configuration["Akismet:ApiKey"];
-            _blogUrl = _configuration["Akismet:BlogUrl"];
         }
 
-        public bool IsConfigured => !string.IsNullOrWhiteSpace(_apiKey) && !string.IsNullOrWhiteSpace(_blogUrl);
+        public bool IsConfigured => !string.IsNullOrWhiteSpace(_apiKey);
 
-        public async Task<bool> VerifyKeyAsync()
+        public async Task<bool> VerifyKeyAsync(string blogUrl)
         {
             if (!IsConfigured)
                 return false;
 
-            return await _akismetClient.VerifyKeyAsync(_blogUrl!);
+            return await _akismetClient.VerifyKeyAsync(blogUrl!);
         }
 
         public async Task<AkismetResponse> CheckCommentAsync(AkismetComment comment)
@@ -186,12 +184,12 @@ namespace Akismet.Umbraco.Services
             DeleteComment(id);
         }
 
-        public async Task<SpamStats?> GetStatsAsync()
+        public async Task<SpamStats?> GetStatsAsync(string blogUrl)
         {
             if (!IsConfigured)
                 return null;
 
-            return await _akismetClient.GetStatisticsAsync(_blogUrl!, _apiKey!);
+            return await _akismetClient.GetStatisticsAsync(blogUrl, _apiKey!);
         }
 
         public int GetTotalSpamCount()

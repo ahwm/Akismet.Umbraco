@@ -11,7 +11,7 @@ export const manifests: Array<UmbExtensionManifest> = [
     conditions: [
       {
         alias: "Umb.Condition.SectionAlias",
-        match: "Umb.Section.Settings",
+        match: "Umb.Section.Content",
       },
     ],
   },

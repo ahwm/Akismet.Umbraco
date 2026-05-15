@@ -1,59 +1,10 @@
-import { LitElement as w, html as u, css as $, state as p, customElement as z } from "@umbraco-cms/backoffice/external/lit";
+import { LitElement as $, html as u, css as w, state as p, customElement as z } from "@umbraco-cms/backoffice/external/lit";
 import { UmbElementMixin as D } from "@umbraco-cms/backoffice/element-api";
 import { UMB_NOTIFICATION_CONTEXT as E } from "@umbraco-cms/backoffice/notification";
-import { c as i } from "./client.gen-DHCnB5Mt.js";
+import { c as s } from "./client.gen-B5Kd-adp.js";
 class l {
-  static ping(t) {
-    return (t?.client ?? i).get({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http"
-        }
-      ],
-      url: "/umbraco/akismetumbraco/api/v1/ping",
-      ...t
-    });
-  }
-  static whatsMyName(t) {
-    return (t?.client ?? i).get({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http"
-        }
-      ],
-      url: "/umbraco/akismetumbraco/api/v1/whatsMyName",
-      ...t
-    });
-  }
-  static whatsTheTimeMrWolf(t) {
-    return (t?.client ?? i).get({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http"
-        }
-      ],
-      url: "/umbraco/akismetumbraco/api/v1/whatsTheTimeMrWolf",
-      ...t
-    });
-  }
-  static whoAmI(t) {
-    return (t?.client ?? i).get({
-      security: [
-        {
-          scheme: "bearer",
-          type: "http"
-        }
-      ],
-      url: "/umbraco/akismetumbraco/api/v1/whoAmI",
-      ...t
-    });
-  }
-  // Akismet endpoints
   static verifyKey(t) {
-    return (t?.client ?? i).get({
+    return (t?.client ?? s).get({
       security: [
         {
           scheme: "bearer",
@@ -65,7 +16,7 @@ class l {
     });
   }
   static getStats(t) {
-    return (t?.client ?? i).get({
+    return (t?.client ?? s).get({
       security: [
         {
           scheme: "bearer",
@@ -77,7 +28,7 @@ class l {
     });
   }
   static getComments(t) {
-    return (t?.client ?? i).get({
+    return (t?.client ?? s).get({
       security: [
         {
           scheme: "bearer",
@@ -89,7 +40,7 @@ class l {
     });
   }
   static getSpamComments(t) {
-    return (t?.client ?? i).get({
+    return (t?.client ?? s).get({
       security: [
         {
           scheme: "bearer",
@@ -101,7 +52,7 @@ class l {
     });
   }
   static getComment(t) {
-    return (t?.client ?? i).get({
+    return (t?.client ?? s).get({
       security: [
         {
           scheme: "bearer",
@@ -113,7 +64,7 @@ class l {
     });
   }
   static getSpamCount(t) {
-    return (t?.client ?? i).get({
+    return (t?.client ?? s).get({
       security: [
         {
           scheme: "bearer",
@@ -125,7 +76,7 @@ class l {
     });
   }
   static getHamCount(t) {
-    return (t?.client ?? i).get({
+    return (t?.client ?? s).get({
       security: [
         {
           scheme: "bearer",
@@ -136,20 +87,20 @@ class l {
       ...t
     });
   }
-  static deleteComment(t) {
-    return (t?.client ?? i).delete({
+  static deleteComments(t) {
+    return (t?.client ?? s).delete({
       security: [
         {
           scheme: "bearer",
           type: "http"
         }
       ],
-      url: `/umbraco/akismetumbraco/api/v1/comment/${t.path.id}`,
+      url: `/umbraco/akismetumbraco/api/v1/comments?ids=${t.path.ids}`,
       ...t
     });
   }
   static reportHam(t) {
-    return (t?.client ?? i).post({
+    return (t?.client ?? s).post({
       security: [
         {
           scheme: "bearer",
@@ -161,7 +112,7 @@ class l {
     });
   }
   static reportSpam(t) {
-    return (t?.client ?? i).post({
+    return (t?.client ?? s).post({
       security: [
         {
           scheme: "bearer",
@@ -173,7 +124,7 @@ class l {
     });
   }
   static checkComment(t) {
-    return (t?.client ?? i).post({
+    return (t?.client ?? s).post({
       security: [
         {
           scheme: "bearer",
@@ -191,13 +142,13 @@ var A = Object.defineProperty, M = Object.getOwnPropertyDescriptor, k = (e) => {
   for (var r = m > 1 ? void 0 : m ? M(t, a) : t, v = e.length - 1, d; v >= 0; v--)
     (d = e[v]) && (r = (m ? d(t, a, r) : d(r)) || r);
   return m && r && A(t, a, r), r;
-}, f = (e, t, a) => t.has(e) || k("Cannot " + a), o = (e, t, a) => (f(e, t, "read from private field"), a ? a.call(e) : t.get(e)), h = (e, t, a) => t.has(e) ? k("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), T = (e, t, a, m) => (f(e, t, "write to private field"), t.set(e, a), a), N = (e, t, a) => (f(e, t, "access private method"), a), s, b, C, y, g;
-let c = class extends D(w) {
+}, _ = (e, t, a) => t.has(e) || k("Cannot " + a), o = (e, t, a) => (_(e, t, "read from private field"), a ? a.call(e) : t.get(e)), h = (e, t, a) => t.has(e) ? k("Cannot add the same private member more than once") : t instanceof WeakSet ? t.add(e) : t.set(e, a), H = (e, t, a, m) => (_(e, t, "write to private field"), t.set(e, a), a), T = (e, t, a) => (_(e, t, "access private method"), a), i, b, C, y, g;
+let c = class extends D($) {
   constructor() {
-    super(), h(this, b), this._keyValid = !1, this._spamComments = [], this._loading = !1, this._spamCount = 0, this._hamCount = 0, h(this, s), h(this, y, async (e) => {
-      const { error: t } = await l.deleteComment({ path: { id: e.toString() } });
+    super(), h(this, b), this._keyValid = !1, this._spamComments = [], this._loading = !1, this._spamCount = 0, this._hamCount = 0, h(this, i), h(this, y, async (e) => {
+      const { error: t } = await l.deleteComments({ path: { ids: e.toString() } });
       if (t) {
-        o(this, s) && o(this, s).peek("danger", {
+        o(this, i) && o(this, i).peek("danger", {
           data: {
             headline: "Error",
             message: "Failed to delete comment"
@@ -205,7 +156,7 @@ let c = class extends D(w) {
         });
         return;
       }
-      o(this, s) && o(this, s).peek("positive", {
+      o(this, i) && o(this, i).peek("positive", {
         data: {
           headline: "Success",
           message: "Comment deleted successfully"
@@ -214,7 +165,7 @@ let c = class extends D(w) {
     }), h(this, g, async (e) => {
       const { error: t } = await l.reportHam({ path: { id: e.toString() } });
       if (t) {
-        o(this, s) && o(this, s).peek("danger", {
+        o(this, i) && o(this, i).peek("danger", {
           data: {
             headline: "Error",
             message: "Failed to report ham"
@@ -222,14 +173,14 @@ let c = class extends D(w) {
         });
         return;
       }
-      o(this, s) && o(this, s).peek("positive", {
+      o(this, i) && o(this, i).peek("positive", {
         data: {
           headline: "Success",
           message: "False positive reported to Akismet"
         }
       }), this.loadData();
     }), this.consumeContext(E, (e) => {
-      T(this, s, e);
+      H(this, i, e);
     }), this.loadData();
   }
   async loadData() {
@@ -242,8 +193,8 @@ let c = class extends D(w) {
     !v && r !== void 0 && (this._spamCount = r);
     const { data: d, error: x } = await l.getHamCount();
     !x && d !== void 0 && (this._hamCount = d);
-    const { data: _, error: S } = await l.getSpamComments();
-    !S && _ && (this._spamComments = _), this._loading = !1;
+    const { data: f, error: S } = await l.getSpamComments();
+    !S && f && (this._spamComments = f), this._loading = !1;
   }
   render() {
     return this._loading ? u`
@@ -278,7 +229,7 @@ let c = class extends D(w) {
                   <div class="stat-label">Accuracy</div>
                 </div>
                 <div class="stat-item">
-                  <div class="stat-value">${N(this, b, C).call(this, this._stats.timeSaved ?? 0)}</div>
+                  <div class="stat-value">${T(this, b, C).call(this, this._stats.timeSaved ?? 0)}</div>
                   <div class="stat-label">Time Saved</div>
                 </div>
               </div>
@@ -335,7 +286,7 @@ let c = class extends D(w) {
     `;
   }
 };
-s = /* @__PURE__ */ new WeakMap();
+i = /* @__PURE__ */ new WeakMap();
 b = /* @__PURE__ */ new WeakSet();
 C = function(e) {
   return e < 3600 ? `${Math.round(e / 60)} minutes` : e < 86400 ? `${Math.round(e / 3600)} hours` : `${Math.round(e / 86400)} days`;
@@ -343,7 +294,7 @@ C = function(e) {
 y = /* @__PURE__ */ new WeakMap();
 g = /* @__PURE__ */ new WeakMap();
 c.styles = [
-  $`
+  w`
       :host {
         display: block;
         padding: var(--uui-size-layout-1);
@@ -451,9 +402,9 @@ n([
 c = n([
   z("akismet-dashboard")
 ], c);
-const L = c;
+const V = c;
 export {
   c as AkismetDashboardElement,
-  L as default
+  V as default
 };
-//# sourceMappingURL=dashboard.element-Cwk_Yy0z.js.map
+//# sourceMappingURL=dashboard.element-DDeSIVtY.js.map
