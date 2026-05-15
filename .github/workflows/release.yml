@@ -9,13 +9,21 @@ jobs:
     permissions:
       id-token: write  # enable GitHub OIDC token issuance for this job
       contents: write
-    runs-on: windows-latest
+    runs-on: windows-2025-vs2026
     timeout-minutes: 15
     steps:
     - name: Checkout
       uses: actions/checkout@v5
+    - name: Setup .NET 10
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 10.0.x
     - name: Build
-      run: dotnet build --configuration Release
+      run: |
+        cd Akismet.Umbraco\Client
+        npm run build
+        cd ..
+        dotnet build --configuration Release
     # Get a short-lived NuGet API key
     - name: NuGet login (OIDC → temp API key)
       uses: NuGet/login@v1
