@@ -37,9 +37,9 @@ namespace Akismet.Umbraco.Controllers
 
         [HttpGet("comments")]
         [ProducesResponseType<IEnumerable<AkismetSubmission>>(StatusCodes.Status200OK)]
-        public IActionResult GetAllComments()
+        public IActionResult GetHamComments()
         {
-            var comments = _akismetService.GetAllComments();
+            var comments = _akismetService.GetHamComments();
             return Ok(comments);
         }
 
@@ -74,11 +74,11 @@ namespace Akismet.Umbraco.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("comment/{id}")]
+        [HttpDelete("comments")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public IActionResult DeleteComment(string id)
+        public IActionResult DeleteComment(string ids)
         {
-            _akismetService.DeleteComment(id);
+            _akismetService.DeleteComment(ids);
             return Ok();
         }
 

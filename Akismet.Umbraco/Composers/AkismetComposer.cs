@@ -26,13 +26,13 @@ namespace Akismet.Umbraco.Composers
             builder.Services.AddScoped<AkismetService>();
 
             // Register the migration notification handler
-            builder.AddNotificationHandler<UmbracoApplicationStartingNotification, AkismetMigrationHandler>();
+            builder.AddNotificationAsyncHandler<UmbracoApplicationStartingNotification, AkismetMigrationHandler>();
         }
     }
 
-    public class AkismetMigrationHandler(IMigrationPlanExecutor migrationPlanExecutor, ICoreScopeProvider coreScopeProvider, IKeyValueService keyValueService) : INotificationHandler<UmbracoApplicationStartingNotification>
+    public class AkismetMigrationHandler(IMigrationPlanExecutor migrationPlanExecutor, ICoreScopeProvider coreScopeProvider, IKeyValueService keyValueService) : INotificationAsyncHandler<UmbracoApplicationStartingNotification>
     {
-        public void Handle(UmbracoApplicationStartingNotification notification)
+        public async Task HandleAsync(UmbracoApplicationStartingNotification notification, CancellationToken cancellationToken)
         {
             var migrationPlan = new MigrationPlan("Akismet.Umbraco");
 
@@ -41,7 +41,7 @@ namespace Akismet.Umbraco.Composers
                 .To<AddExtraColumns>("akismet-extra-columns");
 
             var upgrader = new Upgrader(migrationPlan);
-            upgrader.ExecuteAsync(migrationPlanExecutor, coreScopeProvider, keyValueService).GetAwaiter().GetResult();
+            await upgrader.ExecuteAsync(migrationPlanExecutor, coreScopeProvider, keyValueService);
         }
     }
 }

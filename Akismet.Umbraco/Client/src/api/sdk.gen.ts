@@ -2,6 +2,7 @@
 
 import type { Client, Options as Options2, TDataShape } from './client';
 import { client } from './client.gen';
+import type { AkismetComment, AkismetResponse } from './types.gen';
 
 export type Options<TData extends TDataShape = TDataShape, ThrowOnError extends boolean = boolean> = Options2<TData, ThrowOnError> & {
     /**
@@ -109,7 +110,7 @@ export class AkismetUmbracoService {
         });
     }
 
-    public static deleteComment<ThrowOnError extends boolean = false>(options: Options<any, ThrowOnError> & { path: { id: string } }) {
+    public static deleteComments<ThrowOnError extends boolean = false>(options: Options<any, ThrowOnError> & { path: { ids: string } }) {
         return (options?.client ?? client).delete<void, any, ThrowOnError>({
             security: [
                 {
@@ -117,7 +118,7 @@ export class AkismetUmbracoService {
                     type: 'http'
                 }
             ],
-            url: `/umbraco/akismetumbraco/api/v1/comment/${options.path.id}`,
+            url: `/umbraco/akismetumbraco/api/v1/comments?ids=${options.path.ids}`,
             ...options
         });
     }
@@ -148,8 +149,8 @@ export class AkismetUmbracoService {
         });
     }
 
-    public static checkComment<ThrowOnError extends boolean = false>(options: Options<any, ThrowOnError> & { body: any }) {
-        return (options?.client ?? client).post<any, any, ThrowOnError>({
+    public static checkComment<ThrowOnError extends boolean = false>(options: Options<any, ThrowOnError> & { body: AkismetComment }) {
+        return (options?.client ?? client).post<AkismetResponse, any, ThrowOnError>({
             security: [
                 {
                     scheme: 'bearer',

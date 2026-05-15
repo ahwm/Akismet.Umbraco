@@ -8,27 +8,7 @@ import {
 import { UmbElementMixin } from "@umbraco-cms/backoffice/element-api";
 import { UMB_NOTIFICATION_CONTEXT } from "@umbraco-cms/backoffice/notification";
 import { AkismetUmbracoService } from "../api/index.js";
-
-interface AkismetSubmission {
-  id: number;
-  commentDate: string;
-  commentType: string;
-  commentText: string;
-  commentData: string;
-  result: string;
-  spamStatus: number;
-  userIp?: string;
-  userName?: string;
-}
-
-interface SpamStats {
-  spam: number;
-  ham: number;
-  missedSpam: number;
-  falsePositives: number;
-  accuracy: number;
-  timeSaved: number;
-}
+import type { AkismetSubmission, SpamStats } from "../api/types.gen.js";
 
 @customElement("akismet-dashboard")
 export class AkismetDashboardElement extends UmbElementMixin(LitElement) {
@@ -109,7 +89,7 @@ export class AkismetDashboardElement extends UmbElementMixin(LitElement) {
   }
 
   #onDeleteComment = async (id: number) => {
-    const { error } = await AkismetUmbracoService.deleteComment({ path: { id: id.toString() } });
+    const { error } = await AkismetUmbracoService.deleteComments({ path: { ids: id.toString() } });
     
     if (error) {
       if (this.#notificationContext) {

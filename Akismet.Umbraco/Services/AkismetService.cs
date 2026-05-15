@@ -15,10 +15,7 @@ namespace Akismet.Umbraco.Services
         private readonly string? _apiKey;
         private readonly string? _blogUrl;
 
-        public AkismetService(
-            IScopeProvider scopeProvider, 
-            AkismetClient akismetClient,
-            IConfiguration configuration)
+        public AkismetService(IScopeProvider scopeProvider, AkismetClient akismetClient, IConfiguration configuration)
         {
             _scopeProvider = scopeProvider;
             _akismetClient = akismetClient;
@@ -65,19 +62,20 @@ namespace Akismet.Umbraco.Services
             scope.Complete();
         }
 
-        public IEnumerable<AkismetSubmission> GetAllComments()
+        public List<AkismetSubmission> GetHamComments(int page = 1)
         {
             using var scope = _scopeProvider.CreateScope(autoComplete: true);
             
             var sql = scope.SqlContext.Sql()
                 .Select("*")
                 .From("AkismetSubmission")
+                .Where("SpamStatus = 0")
                 .OrderByDescending("CommentDate");
 
-            return scope.Database.Query<AkismetSubmission>(sql);
+            return [.. scope.Database.Query<AkismetSubmission>(sql).Skip((page - 1) * 10).Take(10)];
         }
 
-        public IEnumerable<AkismetSubmission> GetSpamComments()
+        public List<AkismetSubmission> GetSpamComments(int page = 1)
         {
             using var scope = _scopeProvider.CreateScope(autoComplete: true);
             
@@ -87,7 +85,7 @@ namespace Akismet.Umbraco.Services
                 .Where("SpamStatus = 1")
                 .OrderByDescending("CommentDate");
 
-            return scope.Database.Query<AkismetSubmission>(sql);
+            return [.. scope.Database.Query<AkismetSubmission>(sql).Skip((page - 1) * 10).Take(10)];
         }
 
         public AkismetSubmission? GetComment(int id)
@@ -126,7 +124,7 @@ namespace Akismet.Umbraco.Services
 
             var ids = id.Split(',').Select(x => Convert.ToInt32(x)).ToList();
             
-            using var scope = _scopeProvider.CreateScope(autoComplete: true);
+            using var scope = _scopeProvider.CreateScope(autoComplete: false);
             
             foreach (var commentId in ids)
             {
@@ -146,10 +144,13 @@ namespace Akismet.Umbraco.Services
                         await _akismetClient.SubmitHamAsync(akismetComment);
                     }
                 }
+                sql = scope.SqlContext.Sql()
+                    .Append("DELETE FROM AkismetSubmission WHERE Id = @0", commentId);
+
+                scope.Database.Execute(sql);
             }
 
             scope.Complete();
-            DeleteComment(id);
         }
 
         public async Task ReportSpamAsync(string id)
