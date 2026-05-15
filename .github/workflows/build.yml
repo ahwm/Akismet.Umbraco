@@ -18,5 +18,6 @@ jobs:
         with:
           dotnet-version: 10.0.x
       - name: Build
-        run: cd Akismet.Umbraco
-          |  dotnet build
+        run: |
+          cd Akismet.Umbraco
+          dotnet build Akismet.Umbraco.slnx
